@@ -25,7 +25,6 @@ public class LoginApi {
             @Override
             public void onResponse(String response) {
                 Log.d("Volley", response.toString());
-                return true;
             }
         }, new Response.ErrorListener() {
             @Override

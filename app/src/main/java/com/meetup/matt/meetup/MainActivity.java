@@ -13,6 +13,8 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.meetup.matt.meetup.Helpers.ActivityTransitionHelper;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -26,16 +28,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, MapsActivity.class);
-                displayActivity(intent, false);
+                ActivityTransitionHelper.displayActivity(intent, false, getApplicationContext());
             }
         });
     }
 
-    public void displayActivity(Intent intent, boolean isAnimated) {
-        if (intent != null) {
-            ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-            startActivity(intent);
-        }
-    }
+
 
 }
