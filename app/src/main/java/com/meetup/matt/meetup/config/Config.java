@@ -21,4 +21,11 @@ public class Config {
     public static final String DB_USER = "hcxkxfckhoodwq";
     public static final String DB_PASSWORD = "fef430591da05a5d8a5abe0166e67d017be236130bbf69b3b7ac40382b23fe5f";
     public static final String URI = "postgres://hcxkxfckhoodwq:fef430591da05a5d8a5abe0166e67d017be236130bbf69b3b7ac40382b23fe5f@ec2-54-243-228-140.compute-1.amazonaws.com:5432/d3gt0tj424qf4g";
+
+    //API ACCESS
+    public static final String REGISTER_URL = DEV_URI+":"+DEV_PORT+"/api/user/register";
+    public static final String LOGIN_URL = DEV_URI+":"+DEV_PORT+"/api/user/login";
+    public static final String ROUTE_INFO_URL = DEV_URI+":"+DEV_PORT+"/api/route/";
+    public static final String ROUTE_UPSERT_URL = DEV_URI+":"+DEV_PORT+"/api/route/upsert";
+
 }

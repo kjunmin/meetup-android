@@ -8,6 +8,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.meetup.matt.meetup.Handlers.ApiRequestHandler;
+import com.meetup.matt.meetup.Handlers.LoginHandler;
+import com.meetup.matt.meetup.Listeners.LoginListener;
 import com.meetup.matt.meetup.config.Config;
 
 import java.util.HashMap;
@@ -35,6 +37,34 @@ public class LoginApi {
             @Override
             protected Map<String, String> getParams() {
                 return emailReq;
+            }
+        };
+        ApiRequestHandler.getInstance(context).addToRequestQueue(stringRequest);
+    };
+
+    public static void handleLogin(final String email, final String password, Context context, final LoginListener callback) throws InterruptedException {
+        String url = Config.LOGIN_URL;
+
+        final Map<String, String> userLogin = new HashMap<>();
+        userLogin.put("email", email);
+        userLogin.put("password", password);
+
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                callback.onAuthResponse(LoginHandler.evaluateLogin(response.toString()));
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("Volley", error.toString());
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                return userLogin;
             }
         };
         ApiRequestHandler.getInstance(context).addToRequestQueue(stringRequest);
