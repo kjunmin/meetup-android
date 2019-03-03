@@ -3,6 +3,8 @@ package com.meetup.matt.meetup.Handlers;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import com.meetup.matt.meetup.dto.ResponseDTO;
 
 import org.json.JSONObject;
@@ -10,11 +12,18 @@ import org.json.JSONObject;
 public class LoginHandler {
     public static boolean evaluateLogin(String response) {
         Gson gson = new Gson();
-        gson.toJson(response);
-        ResponseDTO res = gson.fromJson(response, ResponseDTO.class);
-        Log.d("evaluatehandler", response);
-        Log.d("evaluatehandler", res.getData());
-        return true;
+        try {
+            ResponseDTO res = gson.fromJson(response, ResponseDTO.class);
+            Log.d("GSON", res.getData());
+            if (res.getStatus() == 1) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (IllegalStateException | JsonSyntaxException exception) {
+            Log.d("LoginError", exception.toString());
+            return false;
+        }
+
     }
 }
- 

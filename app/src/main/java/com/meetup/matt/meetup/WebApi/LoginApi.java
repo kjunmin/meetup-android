@@ -42,7 +42,7 @@ public class LoginApi {
         ApiRequestHandler.getInstance(context).addToRequestQueue(stringRequest);
     };
 
-    public static void handleLogin(final String email, final String password, Context context, final LoginListener callback) throws InterruptedException {
+    public static void handleLogin(final String email, final String password, Context context, final LoginListener callback) {
         String url = Config.LOGIN_URL;
 
         final Map<String, String> userLogin = new HashMap<>();

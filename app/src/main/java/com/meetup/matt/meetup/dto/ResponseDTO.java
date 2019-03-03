@@ -4,7 +4,14 @@ public class ResponseDTO {
     private int status;
     private String data;
 
-    ResponseDTO(){};
+    public ResponseDTO(){
+
+    };
+
+    public ResponseDTO(int status, String data) {
+        this.status = status;
+        this.data = data;
+    }
 
     public int getStatus() {
         return status;
