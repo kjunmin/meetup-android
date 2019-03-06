@@ -1,15 +1,19 @@
 package com.meetup.matt.meetup.dto;
 
+import com.google.gson.JsonObject;
+
 public class ResponseDTO {
     private int status;
-    private String data;
+    private String text;
+    private JsonObject data;
 
     public ResponseDTO(){
 
     };
 
-    public ResponseDTO(int status, String data) {
+    public ResponseDTO(int status, String text, JsonObject data) {
         this.status = status;
+        this.text = text;
         this.data = data;
     }
 
@@ -17,15 +21,10 @@ public class ResponseDTO {
         return status;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
+    public String getText() {
+        return text;
     }
 
-    public String getData() {
-        return data;
-    }
+    public JsonObject getData() { return data; }
 
-    public void setData(String data) {
-        this.data = data;
-    }
 }

@@ -14,7 +14,7 @@ public class LoginHandler {
         Gson gson = new Gson();
         try {
             ResponseDTO res = gson.fromJson(response, ResponseDTO.class);
-            Log.d("GSON", res.getData());
+            Log.d("GSON", "Test:" + res.getData().toString());
             if (res.getStatus() == 1) {
                 return true;
             } else {
