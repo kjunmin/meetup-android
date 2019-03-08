@@ -54,7 +54,7 @@ public class LoginApi {
 
             @Override
             public void onResponse(String response) {
-                callback.onAuthResponse(LoginHandler.evaluateLogin(response.toString()));
+                callback.onAuthResponse(LoginHandler.evaluateLogin(response.toString()), LoginHandler.getLoginDetails(response.toString()));
             }
         }, new Response.ErrorListener() {
             @Override

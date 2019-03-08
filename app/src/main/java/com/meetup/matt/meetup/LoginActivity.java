@@ -34,6 +34,7 @@ import android.widget.TextView;
 import com.meetup.matt.meetup.Helpers.ActivityTransitionHelper;
 import com.meetup.matt.meetup.Listeners.LoginListener;
 import com.meetup.matt.meetup.WebApi.LoginApi;
+import com.meetup.matt.meetup.dto.UserDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -178,7 +179,7 @@ public class LoginActivity extends AppCompatActivity {
 
         LoginApi.handleLogin(email, password, getApplicationContext(), new LoginListener() {
             @Override
-            public void onAuthResponse(boolean isAuthenticated) {
+            public void onAuthResponse(boolean isAuthenticated, UserDTO userLoginDetails) {
                 if (isAuthenticated) {
                     showProgress(false);
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
