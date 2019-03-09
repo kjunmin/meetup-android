@@ -1,10 +1,43 @@
 package com.meetup.matt.meetup.dto;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.time.LocalDateTime;
 
-public class UserDTO {
+public class UserDTO implements Parcelable {
+
+    public UserDTO(Parcel in) {
+        this.firstName = in.readString();
+        this.lastName = in.readString();
+        this.userId = in.readString();
+        this.createdDate = in.readString();
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public UserDTO createFromParcel(Parcel in) {
+            return new UserDTO(in);
+        }
+
+        public UserDTO[] newArray(int size) {
+            return new UserDTO[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.firstName);
+        dest.writeString(this.lastName);
+        dest.writeString(this.userId);
+        dest.writeString(this.createdDate);
+    }
 
     @SerializedName("firstname") private String firstName;
     @SerializedName("lastname") private String lastName;

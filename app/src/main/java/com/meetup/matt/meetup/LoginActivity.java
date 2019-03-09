@@ -183,6 +183,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (isAuthenticated) {
                     showProgress(false);
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    intent.putExtra("userDetails", userLoginDetails);
                     ActivityTransitionHelper.displayActivity(intent, false, getApplicationContext());
                 } else {
                     showProgress(false);
