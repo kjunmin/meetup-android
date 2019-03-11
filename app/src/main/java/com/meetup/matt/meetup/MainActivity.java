@@ -14,6 +14,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.meetup.matt.meetup.Helpers.ActivityTransitionHelper;
+import com.meetup.matt.meetup.dto.UserDTO;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,6 +22,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        UserDTO userDetails = (UserDTO) getIntent().getParcelableExtra("userDetails");
+
+        Toast.makeText(this, userDetails.getFirstName(), Toast.LENGTH_SHORT).show();
 
         Button test = (Button) findViewById(R.id.btn_start);
         test.setOnClickListener(new View.OnClickListener() {

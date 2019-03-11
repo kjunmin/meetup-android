@@ -1,17 +1,58 @@
 package com.meetup.matt.meetup.dto;
 
-public class UserDTO {
+import android.os.Parcel;
+import android.os.Parcelable;
 
-    private String firstName;
-    private String lastName;
-    private String userId;
+import com.google.gson.annotations.SerializedName;
 
-    public UserDTO(String firstName, String lastName, String userId) {
+import java.time.LocalDateTime;
+
+public class UserDTO implements Parcelable {
+
+    public UserDTO(Parcel in) {
+        this.firstName = in.readString();
+        this.lastName = in.readString();
+        this.userId = in.readString();
+        this.createdDate = in.readString();
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public UserDTO createFromParcel(Parcel in) {
+            return new UserDTO(in);
+        }
+
+        public UserDTO[] newArray(int size) {
+            return new UserDTO[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.firstName);
+        dest.writeString(this.lastName);
+        dest.writeString(this.userId);
+        dest.writeString(this.createdDate);
+    }
+
+    @SerializedName("firstname") private String firstName;
+    @SerializedName("lastname") private String lastName;
+    @SerializedName("user_id") private String userId;
+    @SerializedName("created_timestamp") private String createdDate;
+
+    public UserDTO() {};
+
+    public UserDTO(String firstName, String lastName, String userId, String createdDate) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.userId = userId;
-    }
+        this.createdDate = createdDate;
 
+    }
 
     public String getFirstName() {
         return firstName;
@@ -35,5 +76,13 @@ public class UserDTO {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(String createdDate) {
+        this.createdDate = createdDate;
     }
 }
