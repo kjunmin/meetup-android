@@ -37,6 +37,13 @@ public class LoginHandler {
             Log.d("LoginError", exception.toString());
             return false;
         }
+    }
 
+    public static boolean isEmailValid(String email) {
+        return email.contains("@");
+    }
+
+    public static boolean isPasswordValid(String password) {
+        return password.length() > 4;
     }
 }

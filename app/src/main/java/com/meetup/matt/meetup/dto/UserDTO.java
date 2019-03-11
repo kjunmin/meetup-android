@@ -46,8 +46,6 @@ public class UserDTO implements Parcelable {
 
     public UserDTO() {};
 
-
-
     public UserDTO(String firstName, String lastName, String userId, String createdDate) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -55,7 +53,6 @@ public class UserDTO implements Parcelable {
         this.createdDate = createdDate;
 
     }
-
 
     public String getFirstName() {
         return firstName;
