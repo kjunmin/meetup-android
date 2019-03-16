@@ -17,38 +17,16 @@ import java.util.Map;
 
 public class LoginApi {
 
-    public static void isEmailValid(final String email, Context context) {
-        String url = Config.DEV_URI+":"+Config.DEV_PORT+"/login";
-
-        final Map<String, String> emailReq = new HashMap<>();
-        emailReq.put("email", email);
-
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Log.d("Volley", response.toString());
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d("Volley", error.toString());
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() {
-                return emailReq;
-            }
-        };
-        ApiRequestHandler.getInstance(context).addToRequestQueue(stringRequest);
-    };
-
-    public static void handleLogin(final String email, final String password, Context context, final LoginListener callback) {
-        String url = Config.LOGIN_URL;
-
+    private static Map<String, String> buildLoginRequestObject(String email, String password) {
         final Map<String, String> userLogin = new HashMap<>();
         userLogin.put("email", email);
         userLogin.put("password", password);
+        return userLogin;
+    }
 
+    public static void handleLogin(final String email, final String password, Context context, final LoginListener callback) {
+        String url = Config.LOGIN_URL;
+        final Map userLogin = buildLoginRequestObject(email, password);
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
 
