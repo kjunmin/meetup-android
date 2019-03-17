@@ -10,8 +10,12 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.meetup.matt.meetup.Handlers.LoginHandler;
+import com.meetup.matt.meetup.Handlers.RegisterHandler;
+import com.meetup.matt.meetup.Listeners.RegisterListener;
+import com.meetup.matt.meetup.WebApi.RegisterApi;
 import com.meetup.matt.meetup.dto.RegistrationDTO;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -111,7 +115,18 @@ public class RegisterActivity extends AppCompatActivity {
     private void startRegistrationProcess(RegistrationDTO registrationDTO) {
         showProgress(true);
 
+        RegisterApi.handleRegistration(registrationDTO, getApplicationContext(), new RegisterListener() {
+            @Override
+            public void onRegisterResponse(boolean isRegisterSuccess, String responseMessage) {
+                if (isRegisterSuccess) {
+                    showProgress(false);
 
+                } else {
+                    showProgress(false);
+                    Toast.makeText(getApplicationContext(), responseMessage, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)

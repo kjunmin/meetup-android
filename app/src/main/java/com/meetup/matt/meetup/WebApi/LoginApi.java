@@ -28,11 +28,12 @@ public class LoginApi {
         String url = Config.LOGIN_URL;
         final Map userLogin = buildLoginRequestObject(email, password);
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+        StringRequest req = new StringRequest(Request.Method.POST, url,
+            new Response.Listener<String>() {
 
             @Override
             public void onResponse(String response) {
-                callback.onAuthResponse(LoginHandler.evaluateLogin(response.toString()), LoginHandler.getLoginDetails(response.toString()));
+                callback.onLoginResponse(LoginHandler.evaluateLogin(response.toString()), LoginHandler.getLoginDetails(response.toString()));
             }
         }, new Response.ErrorListener() {
             @Override
@@ -45,7 +46,7 @@ public class LoginApi {
                 return userLogin;
             }
         };
-        ApiRequestHandler.getInstance(context).addToRequestQueue(stringRequest);
+        ApiRequestHandler.getInstance(context).addToRequestQueue(req);
     };
 
 

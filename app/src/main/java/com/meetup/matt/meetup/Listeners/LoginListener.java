@@ -4,5 +4,6 @@ import com.meetup.matt.meetup.dto.UserDTO;
 
 public interface LoginListener {
 
-    public void onAuthResponse(boolean response, UserDTO userLoginDetails);
+    public void onLoginResponse(boolean isAuthenticated, UserDTO userLoginDetails);
+
 }

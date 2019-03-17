@@ -153,7 +153,7 @@ public class LoginActivity extends AppCompatActivity {
 
         LoginApi.handleLogin(email, password, getApplicationContext(), new LoginListener() {
             @Override
-            public void onAuthResponse(boolean isAuthenticated, UserDTO userLoginDetails) {
+            public void onLoginResponse(boolean isAuthenticated, UserDTO userLoginDetails) {
                 if (isAuthenticated) {
                     showProgress(false);
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
@@ -165,6 +165,7 @@ public class LoginActivity extends AppCompatActivity {
                     mPasswordView.requestFocus();
                 }
             }
+
         });
     }
 
