@@ -3,6 +3,7 @@ package com.meetup.matt.meetup;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 
 import com.meetup.matt.meetup.Handlers.LoginHandler;
 import com.meetup.matt.meetup.Handlers.RegisterHandler;
+import com.meetup.matt.meetup.Helpers.ActivityTransitionHelper;
 import com.meetup.matt.meetup.Listeners.RegisterListener;
 import com.meetup.matt.meetup.WebApi.RegisterApi;
 import com.meetup.matt.meetup.dto.RegistrationDTO;
@@ -120,7 +122,9 @@ public class RegisterActivity extends AppCompatActivity {
             public void onRegisterResponse(boolean isRegisterSuccess, String responseMessage) {
                 if (isRegisterSuccess) {
                     showProgress(false);
-
+                    Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                    ActivityTransitionHelper.displayActivity(intent, false, getApplicationContext());
+                    Toast.makeText(getApplicationContext(), responseMessage, Toast.LENGTH_SHORT).show();
                 } else {
                     showProgress(false);
                     Toast.makeText(getApplicationContext(), responseMessage, Toast.LENGTH_SHORT).show();
