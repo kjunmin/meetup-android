@@ -8,7 +8,7 @@ import com.meetup.matt.meetup.dto.ResponseDTO;
 import com.meetup.matt.meetup.dto.UserDTO;
 
 
-public class LoginHandler {
+public final class LoginHandler {
     public static UserDTO getLoginDetails(String response) {
         Gson gson = new Gson();
         try {

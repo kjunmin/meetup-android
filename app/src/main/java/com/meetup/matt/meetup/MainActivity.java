@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.meetup.matt.meetup.Helpers.ActivityTransitionHelper;
@@ -18,21 +19,35 @@ import com.meetup.matt.meetup.dto.UserDTO;
 
 public class MainActivity extends AppCompatActivity {
 
+    private TextView mWelcomeTextView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mWelcomeTextView = (TextView) findViewById(R.id.welcome_text);
+
         UserDTO userDetails = (UserDTO) getIntent().getParcelableExtra("userDetails");
 
-        Toast.makeText(this, userDetails.getFirstName(), Toast.LENGTH_SHORT).show();
+        mWelcomeTextView.setText(String.format("Welcome %s!", userDetails.getFirstName()));
+//        Toast.makeText(this, userDetails.getFirstName(), Toast.LENGTH_SHORT).show();
 
-        Button test = (Button) findViewById(R.id.btn_start);
-        test.setOnClickListener(new View.OnClickListener() {
+        Button startButton = (Button) findViewById(R.id.start_button);
+        startButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, MapsActivity.class);
+                ActivityTransitionHelper.displayActivity(intent, false, getApplicationContext());
+            }
+        });
+
+        Button friendListButton = (Button) findViewById(R.id.friendlist_button);
+        friendListButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, FriendListActivity.class);
                 ActivityTransitionHelper.displayActivity(intent, false, getApplicationContext());
             }
         });

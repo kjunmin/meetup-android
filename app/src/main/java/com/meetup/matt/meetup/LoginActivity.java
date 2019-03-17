@@ -59,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        Button mRegisterButton = (Button) findViewById(R.id.register_btn);
+        Button mRegisterButton = (Button) findViewById(R.id.register_button);
         mRegisterButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -105,8 +105,6 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
             focusView.requestFocus();
         } else {
             // Show a progress spinner, and kick off a background task to
@@ -155,7 +153,7 @@ public class LoginActivity extends AppCompatActivity {
 
         LoginApi.handleLogin(email, password, getApplicationContext(), new LoginListener() {
             @Override
-            public void onAuthResponse(boolean isAuthenticated, UserDTO userLoginDetails) {
+            public void onLoginResponse(boolean isAuthenticated, UserDTO userLoginDetails) {
                 if (isAuthenticated) {
                     showProgress(false);
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
@@ -167,6 +165,7 @@ public class LoginActivity extends AppCompatActivity {
                     mPasswordView.requestFocus();
                 }
             }
+
         });
     }
 
