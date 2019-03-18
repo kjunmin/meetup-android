@@ -17,20 +17,24 @@ import com.meetup.matt.meetup.dto.RouteDTO;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LocationApi {
+public final class LocationApi {
+
+    public static Map buildRouteRequestObject(RouteDTO routeDTO) {
+        final Map<String, String> locationData = new HashMap<>();
+        locationData.put("user_id", routeDTO.getUserId());
+        locationData.put("current_location", routeDTO.getOriginAddress());
+        locationData.put("destination_location", routeDTO.getDestinationAddress());
+        locationData.put("current_address", routeDTO.getOrigin().toString());
+        locationData.put("destination_address", routeDTO.getDestination().toString());
+        return locationData;
+    }
 
     public static void insertRouteData(final RouteDTO route, Context context) {
         String url = Config.DEV_URI+":"+Config.DEV_PORT;
         url += "/api";
 
-        GeocodeHelper geocodeHelper = new GeocodeHelper(context);
 
-        final Map<String, String> locationData = new HashMap<>();
-        locationData.put("user_id", "placeholder");
-        locationData.put("current_location", route.getOrigin().toString());
-        locationData.put("destination_location", route.getDestination().toString());
-        locationData.put("current_address", geocodeHelper.getAddressFromLatLng(route.getOrigin()));
-        locationData.put("destination_address", geocodeHelper.getAddressFromLatLng(route.getDestination()));
+        final Map locationData = buildRouteRequestObject(route);
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override

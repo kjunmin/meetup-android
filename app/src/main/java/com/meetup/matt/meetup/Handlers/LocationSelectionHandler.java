@@ -32,11 +32,11 @@ public class LocationSelectionHandler {
     }
 
     public void displayPolyline(LatLng origin, LatLng destination, Context context, final GoogleMap map) {
-        RouteDTO route = new RouteDTO.Builder()
+        RouteDTO route = new RouteDTO.Builder(context)
                                     .setOrigin(origin)
                                     .setDestination(destination)
-                                    .setUnits(RouteDTO.METRIC)
-                                    .setTransportMode(RouteDTO.WALKING)
+                                    .setUnits(RouteDTO.Units.METRIC)
+                                    .setTransportMode(RouteDTO.TransportMode.WALKING)
                                     .build();
 
         RouteHandler routeHandler = new RouteHandler(route, context);
