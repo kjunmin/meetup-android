@@ -7,7 +7,7 @@ import com.meetup.matt.meetup.Helpers.GeocodeHelper;
 
 public class RouteDTO {
 
-    public class TransportMode {
+    public static final class TransportMode {
         //Constants for route Gmap Directions API
         public static final String DRIVING = "driving";
         public static final String TRANSIT = "transit";
@@ -15,7 +15,7 @@ public class RouteDTO {
         public static final String BICYCLING = "bicycling";
     }
 
-    public class Units {
+    public static final class Units {
         public static final String METRIC = "metric";
         public static final String IMPERIAL = "imperial";
     }
@@ -28,9 +28,9 @@ public class RouteDTO {
     private String units;
     private String transportMode;
 
-    private RouteDTO() {};
+    public RouteDTO() {};
 
-    public class Builder {
+    public static class Builder {
 
         public Builder(Context context) {
             this.context = context;

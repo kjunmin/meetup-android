@@ -27,8 +27,7 @@ public class MInstanceClient {
     private GoogleMap map;
     private View view;
     private Context context;
-    private LatLng origin;
-    private LatLng destination;
+    private LatLng markerDestinationPoint;
     private GeocodeHelper geocodeHelper;
     RouteDTO route;
 
@@ -39,18 +38,17 @@ public class MInstanceClient {
         this.lastUpdatedMarker = null;
         this.lastUpdatedPolyline = null;
         this.geocodeHelper = new GeocodeHelper(context);
-        this.route = new RouteDTO.Builder().build();
+        this.route = new RouteDTO.Builder(context).build();
     }
 
     private void enableMapActions() {
         map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
-                destination = latLng;
+                markerDestinationPoint = latLng;
                 route.setDestination(latLng);
                 String addressValue = geocodeHelper.getAddressFromLatLng(latLng);
                 displayLocationUI(addressValue);
-
             }
         });
     }
@@ -58,9 +56,7 @@ public class MInstanceClient {
 
     public void startDirections(LatLng origin) {
         route.setOrigin(origin);
-
     }
-
 
     private void plotPolyline() {
         RouteHandler routeHandler = new RouteHandler(route, context);
@@ -82,7 +78,7 @@ public class MInstanceClient {
         if (lastUpdatedMarker != null) {
             lastUpdatedMarker.remove();
         }
-        Marker marker = map.addMarker(new MarkerOptions().title("test").position(destination));
+        Marker marker = map.addMarker(new MarkerOptions().title("test").position(markerDestinationPoint));
         lastUpdatedMarker = marker;
     }
 
