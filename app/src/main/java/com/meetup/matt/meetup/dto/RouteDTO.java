@@ -1,33 +1,59 @@
 package com.meetup.matt.meetup.dto;
 
+import android.content.Context;
+
 import com.google.android.gms.maps.model.LatLng;
+import com.meetup.matt.meetup.Helpers.GeocodeHelper;
 
 public class RouteDTO {
 
+    public class TransportMode {
+        //Constants for route Gmap Directions API
+        public static final String DRIVING = "driving";
+        public static final String TRANSIT = "transit";
+        public static final String WALKING = "walking";
+        public static final String BICYCLING = "bicycling";
+    }
+
+    public class Units {
+        public static final String METRIC = "metric";
+        public static final String IMPERIAL = "imperial";
+    }
+
+    private String userId;
     private LatLng origin;
     private LatLng destination;
+    private String originAddress;
+    private String destinationAddress;
     private String units;
     private String transportMode;
 
-    //Constants for route Gmap Directions API
-    public static final String DRIVING = "driving";
-    public static final String TRANSIT = "transit";
-    public static final String WALKING = "walking";
-    public static final String BICYCLING = "bicycling";
-    public static final String METRIC = "metric";
-    public static final String IMPERIAL = "imperial";
-
     private RouteDTO() {};
 
-    public static class Builder{
+    public class Builder {
+
+        public Builder(Context context) {
+            this.context = context;
+        }
+
+        private Context context;
+        private String userId;
         private LatLng origin;
         private LatLng destination;
+        private String originAddress;
+        private String destinationAddress;
         private String units;
         private String transportMode;
+        GeocodeHelper helper = new GeocodeHelper(context);
 
         public Builder() {
-            this.transportMode = RouteDTO.WALKING;
-            this.units = RouteDTO.METRIC;
+            this.transportMode = RouteDTO.TransportMode.WALKING;
+            this.units = RouteDTO.Units.METRIC;
+        }
+
+        public Builder setUserId(String userId) {
+            this.userId = userId;
+            return this;
         }
 
         public Builder setOrigin(LatLng origin) {
@@ -37,6 +63,16 @@ public class RouteDTO {
 
         public Builder setDestination(LatLng destination) {
             this.destination = destination;
+            return this;
+        }
+
+        public Builder setOriginAddress() {
+            this.originAddress = helper.getAddressFromLatLng(origin);
+            return this;
+        }
+
+        public Builder setDestinationAddress() {
+            this.destinationAddress = helper.getAddressFromLatLng(destination);
             return this;
         }
 
@@ -52,8 +88,11 @@ public class RouteDTO {
 
         public RouteDTO build() {
             RouteDTO route = new RouteDTO();
+            route.userId = this.userId;
             route.origin = this.origin;
             route.destination = this.destination;
+            route.originAddress = this.originAddress;
+            route.destinationAddress = this.destinationAddress;
             route.transportMode = this.transportMode;
             route.units = this.units;
             return route;
@@ -92,5 +131,29 @@ public class RouteDTO {
 
     public void setTransportMode(String transportMode) {
         this.transportMode = transportMode;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getOriginAddress() {
+        return originAddress;
+    }
+
+    public void setOriginAddress(String originAddress) {
+        this.originAddress = originAddress;
+    }
+
+    public String getDestinationAddress() {
+        return destinationAddress;
+    }
+
+    public void setDestinationAddress(String destinationAddress) {
+        this.destinationAddress = destinationAddress;
     }
 }

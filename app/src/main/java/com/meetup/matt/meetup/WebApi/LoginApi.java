@@ -15,7 +15,7 @@ import com.meetup.matt.meetup.config.Config;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LoginApi {
+public final class LoginApi {
 
     private static Map<String, String> buildLoginRequestObject(String email, String password) {
         final Map<String, String> userLogin = new HashMap<>();

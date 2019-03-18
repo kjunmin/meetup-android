@@ -17,7 +17,7 @@ import com.meetup.matt.meetup.dto.RegistrationDTO;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RegisterApi {
+public final class RegisterApi {
 
     private static Map buildRegistrationRequestObject(RegistrationDTO registrationDTO) {
         final Map<String, String> userRegistration = new HashMap<>();
