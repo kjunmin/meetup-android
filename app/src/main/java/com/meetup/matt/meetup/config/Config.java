@@ -25,6 +25,7 @@ public class Config {
     //API ACCESS
     public static final String REGISTER_URL = DEV_URI+":"+DEV_PORT+"/api/user/register";
     public static final String LOGIN_URL = DEV_URI+":"+DEV_PORT+"/api/user/login";
+    public static final String FRIEND_REQ_URL = DEV_URI+":"+DEV_PORT+"api/getUserByUuid/";
     public static final String ROUTE_INFO_URL = DEV_URI+":"+DEV_PORT+"/api/route/";
     public static final String ROUTE_UPSERT_URL = DEV_URI+":"+DEV_PORT+"/api/route/upsert";
 

@@ -1,10 +1,8 @@
 package com.meetup.matt.meetup;
 
-import android.content.Context;
 import android.support.test.runner.AndroidJUnit4;
-import android.test.mock.MockContext;
 
-import com.meetup.matt.meetup.Handlers.LoginHandler;
+import com.meetup.matt.meetup.Controllers.LoginController;
 
 import junit.framework.TestCase;
 
@@ -16,7 +14,7 @@ public class LoginTest extends TestCase {
 
     @Test
     public void isLoginEmailValidTest() {
-        assertTrue(LoginHandler.isEmailValid("test@email.com"));
-        assertFalse(LoginHandler.isEmailValid("test"));
+        assertTrue(LoginController.isEmailValid("test@email.com"));
+        assertFalse(LoginController.isEmailValid("test"));
     }
 }

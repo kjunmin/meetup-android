@@ -1,4 +1,4 @@
-package com.meetup.matt.meetup.Handlers;
+package com.meetup.matt.meetup.Controllers;
 
 import android.util.Log;
 
@@ -8,7 +8,7 @@ import com.meetup.matt.meetup.dto.ResponseDTO;
 import com.meetup.matt.meetup.dto.UserDTO;
 
 
-public final class LoginHandler {
+public final class LoginController {
     public static UserDTO getLoginDetails(String response) {
         Gson gson = new Gson();
         try {
