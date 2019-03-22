@@ -8,8 +8,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.meetup.matt.meetup.Handlers.ApiRequestHandler;
-import com.meetup.matt.meetup.Handlers.RegisterHandler;
-import com.meetup.matt.meetup.Listeners.LoginListener;
+import com.meetup.matt.meetup.Controllers.RegisterContoller;
 import com.meetup.matt.meetup.Listeners.RegisterListener;
 import com.meetup.matt.meetup.config.Config;
 import com.meetup.matt.meetup.dto.RegistrationDTO;
@@ -36,7 +35,7 @@ public final class RegisterApi {
             new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                callback.onRegisterResponse(RegisterHandler.evaluateRegistration(response), RegisterHandler.getMessage(response));
+                callback.onRegisterResponse(RegisterContoller.evaluateRegistration(response), RegisterContoller.getMessage(response));
             }
         }, new Response.ErrorListener() {
             @Override

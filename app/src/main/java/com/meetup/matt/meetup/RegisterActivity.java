@@ -13,8 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.meetup.matt.meetup.Handlers.LoginHandler;
-import com.meetup.matt.meetup.Handlers.RegisterHandler;
+import com.meetup.matt.meetup.Controllers.LoginController;
 import com.meetup.matt.meetup.Helpers.ActivityTransitionHelper;
 import com.meetup.matt.meetup.Listeners.RegisterListener;
 import com.meetup.matt.meetup.WebApi.RegisterApi;
@@ -66,7 +65,7 @@ public class RegisterActivity extends AppCompatActivity {
         if (TextUtils.isEmpty(registrationDTO.getEmail())) {
             mEmailView.setError(getString(R.string.error_field_required));
             return false;
-        } else if (!LoginHandler.isEmailValid(registrationDTO.getEmail())) {
+        } else if (!LoginController.isEmailValid(registrationDTO.getEmail())) {
             mEmailView.setError(getString(R.string.error_invalid_email));
             return false;
         }
@@ -81,12 +80,12 @@ public class RegisterActivity extends AppCompatActivity {
             return false;
         }
 
-        if (TextUtils.isEmpty(registrationDTO.getPassword()) && !LoginHandler.isPasswordValid(registrationDTO.getPassword())) {
+        if (TextUtils.isEmpty(registrationDTO.getPassword()) && !LoginController.isPasswordValid(registrationDTO.getPassword())) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             return false;
         }
 
-        if (TextUtils.isEmpty(registrationDTO.getPasswordCheck()) && !LoginHandler.isPasswordValid(registrationDTO.getPasswordCheck())) {
+        if (TextUtils.isEmpty(registrationDTO.getPasswordCheck()) && !LoginController.isPasswordValid(registrationDTO.getPasswordCheck())) {
             mPasswordCheckView.setError(getString(R.string.error_invalid_password));
             return false;
         } else if (!registrationDTO.getPassword().equals(registrationDTO.getPasswordCheck())){

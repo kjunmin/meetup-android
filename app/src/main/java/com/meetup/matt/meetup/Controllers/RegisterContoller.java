@@ -1,4 +1,4 @@
-package com.meetup.matt.meetup.Handlers;
+package com.meetup.matt.meetup.Controllers;
 
 import android.util.Log;
 
@@ -6,7 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.meetup.matt.meetup.dto.ResponseDTO;
 
-public final class RegisterHandler {
+public final class RegisterContoller {
     public static boolean evaluateRegistration(String response) {
         Gson gson = new Gson();
         try {
@@ -19,7 +19,7 @@ public final class RegisterHandler {
             }
 
         } catch (IllegalStateException | JsonSyntaxException exception) {
-            Log.d("LoginError", exception.toString());
+            Log.d("RequestError", exception.toString());
             return false;
         }
     }
@@ -31,7 +31,7 @@ public final class RegisterHandler {
             return res.getText();
 
         } catch (IllegalStateException | JsonSyntaxException exception) {
-            Log.d("LoginError", exception.toString());
+            Log.d("RequestError", exception.toString());
             return null;
         }
     }

@@ -17,7 +17,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 
-import com.meetup.matt.meetup.Handlers.LoginHandler;
+import com.meetup.matt.meetup.Controllers.LoginController;
 import com.meetup.matt.meetup.Helpers.ActivityTransitionHelper;
 import com.meetup.matt.meetup.Listeners.LoginListener;
 import com.meetup.matt.meetup.WebApi.LoginApi;
@@ -87,7 +87,7 @@ public class LoginActivity extends AppCompatActivity {
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !LoginHandler.isPasswordValid(password)) {
+        if (!TextUtils.isEmpty(password) && !LoginController.isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
@@ -98,7 +98,7 @@ public class LoginActivity extends AppCompatActivity {
             mEmailView.setError(getString(R.string.error_field_required));
             focusView = mEmailView;
             cancel = true;
-        } else if (!LoginHandler.isEmailValid(email)) {
+        } else if (!LoginController.isEmailValid(email)) {
             mEmailView.setError(getString(R.string.error_invalid_email));
             focusView = mEmailView;
             cancel = true;

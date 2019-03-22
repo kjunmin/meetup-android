@@ -1,8 +1,11 @@
 package com.meetup.matt.meetup.config;
 
 public class Config {
+
+    //Local Storage Settings
     public static final String PREF_FILE_NAME = "Preferences";
     public static final String SETTINGS_FILE_NAME = "Settings";
+    public static final String SESSION_FILE_NAME = "Session_Data";
 
     //Location Settings
     public static final int LOCATION_UPDATE_INTERVAL = 3000; //Time in millis
@@ -25,7 +28,10 @@ public class Config {
     //API ACCESS
     public static final String REGISTER_URL = DEV_URI+":"+DEV_PORT+"/api/user/register";
     public static final String LOGIN_URL = DEV_URI+":"+DEV_PORT+"/api/user/login";
+    public static final String GET_USER_BY_UUID_URL = DEV_URI+":"+DEV_PORT+"api/getUserByUuid/";
     public static final String ROUTE_INFO_URL = DEV_URI+":"+DEV_PORT+"/api/route/";
     public static final String ROUTE_UPSERT_URL = DEV_URI+":"+DEV_PORT+"/api/route/upsert";
+    public static final String ADD_USER_URL = DEV_URI+":"+DEV_PORT+"/api/friend/addFriend";
+    public static final String GET_FRIENDS_URL = DEV_URI+":"+DEV_PORT+"/api/friend/getFriends/";
 
 }

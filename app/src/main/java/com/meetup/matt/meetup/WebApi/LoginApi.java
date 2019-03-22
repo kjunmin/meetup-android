@@ -8,7 +8,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.meetup.matt.meetup.Handlers.ApiRequestHandler;
-import com.meetup.matt.meetup.Handlers.LoginHandler;
+import com.meetup.matt.meetup.Controllers.LoginController;
 import com.meetup.matt.meetup.Listeners.LoginListener;
 import com.meetup.matt.meetup.config.Config;
 
@@ -33,7 +33,7 @@ public final class LoginApi {
 
             @Override
             public void onResponse(String response) {
-                callback.onLoginResponse(LoginHandler.evaluateLogin(response.toString()), LoginHandler.getLoginDetails(response.toString()));
+                callback.onLoginResponse(LoginController.evaluateLogin(response.toString()), LoginController.getLoginDetails(response.toString()));
             }
         }, new Response.ErrorListener() {
             @Override
