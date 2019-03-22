@@ -17,7 +17,7 @@ public final class LoginController {
             return user;
 
         } catch (IllegalStateException | JsonSyntaxException exception) {
-            Log.d("LoginError", exception.toString());
+            Log.d("RequestError", exception.toString());
             return null;
         }
     }
@@ -34,7 +34,7 @@ public final class LoginController {
                 return false;
             }
         } catch (IllegalStateException | JsonSyntaxException exception) {
-            Log.d("LoginError", exception.toString());
+            Log.d("RequestError", exception.toString());
             return false;
         }
     }

@@ -19,7 +19,7 @@ public final class RegisterContoller {
             }
 
         } catch (IllegalStateException | JsonSyntaxException exception) {
-            Log.d("LoginError", exception.toString());
+            Log.d("RequestError", exception.toString());
             return false;
         }
     }
@@ -31,7 +31,7 @@ public final class RegisterContoller {
             return res.getText();
 
         } catch (IllegalStateException | JsonSyntaxException exception) {
-            Log.d("LoginError", exception.toString());
+            Log.d("RequestError", exception.toString());
             return null;
         }
     }
