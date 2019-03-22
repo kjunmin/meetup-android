@@ -48,7 +48,7 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
         ImageView flItemAvatarView = holder.flItemAvatarView;
 
         flItemUsernameView.setText(mDataset.get(position).getFirstName());
-        flItemAvatarView.setImageResource(R.drawable.ic_placeholder_avatar);
+        flItemAvatarView.setImageResource(R.drawable.ic_placeholder_avatar_24dp);
     }
 
     @Override
