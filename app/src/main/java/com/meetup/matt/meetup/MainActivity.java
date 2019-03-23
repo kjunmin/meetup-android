@@ -35,10 +35,9 @@ public class MainActivity extends AppCompatActivity {
         LocalStorageHandler.storeSessionUser(getApplicationContext(), Config.SESSION_FILE_NAME, userDetails);
 
         mWelcomeTextView.setText(String.format("Welcome %s!", userDetails.getFirstName()));
-//        Toast.makeText(this, userDetails.getFirstName(), Toast.LENGTH_SHORT).show();
 
-        Button startButton = (Button) findViewById(R.id.start_button);
-        startButton.setOnClickListener(new View.OnClickListener() {
+        ImageButton startApplicationButton = (ImageButton) findViewById(R.id.launch_application_button);
+        startApplicationButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
@@ -47,8 +46,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Button friendListButton = (Button) findViewById(R.id.friendlist_button);
-        friendListButton.setOnClickListener(new View.OnClickListener() {
+        ImageButton launchFriendlistButton = (ImageButton) findViewById(R.id.launch_friendlist_button);
+        launchFriendlistButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, FriendListActivity.class);
