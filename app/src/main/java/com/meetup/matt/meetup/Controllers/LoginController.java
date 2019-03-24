@@ -26,13 +26,7 @@ public final class LoginController {
         Gson gson = new Gson();
         try {
             ResponseDTO res = gson.fromJson(response, ResponseDTO.class);
-
-            //Login Successful
-            if (res.getStatus() == 1) {
-                return true;
-            } else {
-                return false;
-            }
+            return (res.getStatus() == 1);
         } catch (IllegalStateException | JsonSyntaxException exception) {
             Log.d("RequestError", exception.toString());
             return false;
