@@ -11,13 +11,7 @@ public final class RegisterContoller {
         Gson gson = new Gson();
         try {
             ResponseDTO res = gson.fromJson(response, ResponseDTO.class);
-
-            if (res.getStatus() == 1) {
-                return true;
-            } else {
-                return false;
-            }
-
+            return (res.getStatus() == 1);
         } catch (IllegalStateException | JsonSyntaxException exception) {
             Log.d("RequestError", exception.toString());
             return false;
