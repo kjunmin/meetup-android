@@ -2,6 +2,7 @@ package com.meetup.matt.meetup.Client;
 
 import android.content.Context;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -13,7 +14,8 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.PolyUtil;
 import com.meetup.matt.meetup.Handlers.RouteHandler;
 import com.meetup.matt.meetup.Helpers.GeocodeHelper;
-import com.meetup.matt.meetup.Listeners.DirectionsListener;
+import com.meetup.matt.meetup.Listeners.ApiResponseListener;
+import com.meetup.matt.meetup.WebApi.RouteApi;
 import com.meetup.matt.meetup.dto.RouteDTO;
 import com.meetup.matt.meetup.dto.UserDTO;
 
@@ -58,12 +60,22 @@ public class MInstanceClient {
         route.setOrigin(origin);
     }
 
-    private void plotPolyline() {
-        RouteHandler routeHandler = new RouteHandler(route, context);
-        routeHandler.getRouteInformation(new DirectionsListener() {
+    private void getDistance() {
+        RouteApi.getDistanceMatrix(context, route, new ApiResponseListener() {
             @Override
-            public void onDirectionsResponse(String res) {
-                String polyString = RouteHandler.getPolyline(res);
+            public void onApiResponse(String response) {
+                String dist = RouteHandler.getDistanceMatrix(response);
+                Log.d("API dist", dist);
+            }
+        });
+    }
+
+    private void plotPolyline() {
+
+        RouteApi.getRouteInformation(context, route, new ApiResponseListener() {
+            @Override
+            public void onApiResponse(String response) {
+                String polyString = RouteHandler.getPolyline(response);
                 List<LatLng> points = PolyUtil.decode(polyString);
                 if (lastUpdatedPolyline != null) {
                     lastUpdatedPolyline.remove();
@@ -88,12 +100,17 @@ public class MInstanceClient {
 
                     @Override
                     public void onClick(View v) {
-                        if (route.getDestination() != null && route.getOrigin() != null && route != null) {
-                            plotPolyline();
-                        }
-                        displayDestinationMarker();
+                        enableDestination();
                     }
                 }).show();
+    }
+
+    private void enableDestination() {
+        if (route.getDestination() != null && route.getOrigin() != null && route != null) {
+            plotPolyline();
+        }
+        getDistance();
+        displayDestinationMarker();
     }
 
     public void startService() {

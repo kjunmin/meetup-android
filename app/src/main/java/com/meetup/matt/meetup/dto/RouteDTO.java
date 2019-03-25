@@ -42,13 +42,12 @@ public class RouteDTO {
         private LatLng destination;
         private String originAddress;
         private String destinationAddress;
-        private String units;
-        private String transportMode;
+        private String units = RouteDTO.Units.METRIC;
+        private String transportMode = RouteDTO.TransportMode.WALKING;
         GeocodeHelper helper = new GeocodeHelper(context);
 
         public Builder() {
-            this.transportMode = RouteDTO.TransportMode.WALKING;
-            this.units = RouteDTO.Units.METRIC;
+
         }
 
         public Builder setUserId(String userId) {

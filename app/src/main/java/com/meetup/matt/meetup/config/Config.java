@@ -19,7 +19,9 @@ public class Config {
     public static final double DISTANCE_TO_TRIGGER = 100.0;
 
     //Directions Settings
-    public static final String ROUTE_API_URL = "https://maps.googleapis.com/maps/api/directions";
+    public static final String GOOGLE_API_KEY = "AIzaSyB_Pf1DWcEUPsqZRbDWRzUf41HW8sbqXVQ";
+    public static final String GOOGLE_DIRECTIONS_API_URL = "https://maps.googleapis.com/maps/api/directions";
+    public static final String GOOGLE_DISTANCE_MATRIX_API_URL = "https://maps.googleapis.com/maps/api/distancematrix";
 
     //Endpoint Settings
     public static final String PROD_URI = "http://meetupendpoint-env.g6hzsmdx3t.ap-southeast-1.elasticbeanstalk.com";
