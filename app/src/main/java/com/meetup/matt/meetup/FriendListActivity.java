@@ -44,6 +44,7 @@ public class FriendListActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 attemptAddFriend();
+
                 return false;
             }
 
@@ -72,18 +73,18 @@ public class FriendListActivity extends AppCompatActivity {
         });
     }
 //
-//    private boolean validateFields(String email) {
-//
-//        if (TextUtils.isEmpty(email)) {
-//            mEmailView.setError(getString(R.string.error_field_required));
-//            return false;
-//        } else if (!LoginController.isEmailValid(email)) {
-//            mEmailView.setError(getString(R.string.error_invalid_email));
-//            return false;
-//        }
-//
-//        return true;
-//    }
+////    private boolean validateFields(String email) {
+////
+////        if (TextUtils.isEmpty(email)) {
+////            mEmailView.setError(getString(R.string.error_field_required));
+////            return false;
+////        } else if (!LoginController.isEmailValid(email)) {
+////            mEmailView.setError(getString(R.string.error_invalid_email));
+////            return false;
+////        }
+////
+////        return true;
+////    }
 
     private void attemptAddFriend() {
 
@@ -96,6 +97,7 @@ public class FriendListActivity extends AppCompatActivity {
                     //Toast.makeText(FriendListActivity.this, response.getText(), Toast.LENGTH_SHORT).show();
                 }
                 Toast.makeText(FriendListActivity.this, response.getText(), Toast.LENGTH_SHORT).show();
+                loadFriendList(userDetails.getUserId());
             }
         });
     }
