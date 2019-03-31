@@ -72,19 +72,19 @@ public class FriendListActivity extends AppCompatActivity {
             }
         });
     }
+
+//    private boolean validateFields(String email) {
 //
-////    private boolean validateFields(String email) {
-////
-////        if (TextUtils.isEmpty(email)) {
-////            mEmailView.setError(getString(R.string.error_field_required));
-////            return false;
-////        } else if (!LoginController.isEmailValid(email)) {
-////            mEmailView.setError(getString(R.string.error_invalid_email));
-////            return false;
-////        }
-////
-////        return true;
-////    }
+//        if (TextUtils.isEmpty(email)) {
+//            mEmailView.setError(getString(R.string.error_field_required));
+//            return false;
+//        } else if (!LoginController.isEmailValid(email)) {
+//            mEmailView.setError(getString(R.string.error_invalid_email));
+//            return false;
+//        }
+//
+//        return true;
+//    }
 
     private void attemptAddFriend() {
 

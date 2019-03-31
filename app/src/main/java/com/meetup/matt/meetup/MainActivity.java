@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
 
         mWelcomeTextView.setText(String.format("Welcome %s!", userDetails.getFirstName()));
 
-        ImageButton startApplicationButton = (ImageButton) findViewById(R.id.launch_application_button);
+        ImageButton startApplicationButton = findViewById(R.id.launch_application_button);
         startApplicationButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        ImageButton launchFriendlistButton = (ImageButton) findViewById(R.id.launch_friendlist_button);
+        ImageButton launchFriendlistButton = findViewById(R.id.launch_friendlist_button);
         launchFriendlistButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

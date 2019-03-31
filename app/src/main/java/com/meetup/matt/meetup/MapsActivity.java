@@ -28,7 +28,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationRequest mLocationRequest;
     SupportMapFragment mapFragment;
-    private String destination;
     GeocodeHelper geocodeHelper;
     View view;
     MInstanceClient mInstanceClient;
@@ -44,7 +43,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         view = findViewById(R.id.map);
         geocodeHelper = new GeocodeHelper(this);
 
-        ((Button) findViewById(R.id.btn_add_user)).setOnClickListener(new View.OnClickListener() {
+        (findViewById(R.id.btn_add_user)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
