@@ -17,14 +17,14 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
 
     private ArrayList<UserDTO> mDataset;
 
-    public static class FriendListViewHolder extends RecyclerView.ViewHolder {
+    protected static class FriendListViewHolder extends RecyclerView.ViewHolder {
         TextView flItemUsernameView;
         ImageView flItemAvatarView;
 
-        public FriendListViewHolder(View v) {
+        private FriendListViewHolder(View v) {
             super(v);
-            this.flItemUsernameView = (TextView) v.findViewById(R.id.friendlist_item_username);
-            this.flItemAvatarView = (ImageView) v.findViewById(R.id.friendlist_item_avatar);
+            this.flItemUsernameView = v.findViewById(R.id.friendlist_item_username);
+            this.flItemAvatarView =  v.findViewById(R.id.friendlist_item_avatar);
         }
     }
 

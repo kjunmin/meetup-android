@@ -5,7 +5,7 @@ public class Config {
     //Environment settings
     public static final String ENV_PROD = "PRODUCTION";
     public static final String ENV_DEV = "DEVELOPMENT";
-    public static final String ENV = ENV_PROD;
+    public static final String ENV = ENV_DEV;
 
 
     //Local Storage Settings
@@ -19,7 +19,9 @@ public class Config {
     public static final double DISTANCE_TO_TRIGGER = 100.0;
 
     //Directions Settings
-    public static final String ROUTE_API_URL = "https://maps.googleapis.com/maps/api/directions";
+    public static final String GOOGLE_API_KEY = "AIzaSyB_Pf1DWcEUPsqZRbDWRzUf41HW8sbqXVQ";
+    public static final String GOOGLE_DIRECTIONS_API_URL = "https://maps.googleapis.com/maps/api/directions";
+    public static final String GOOGLE_DISTANCE_MATRIX_API_URL = "https://maps.googleapis.com/maps/api/distancematrix";
 
     //Endpoint Settings
     public static final String PROD_URI = "http://meetupendpoint-env.g6hzsmdx3t.ap-southeast-1.elasticbeanstalk.com";
@@ -41,5 +43,7 @@ public class Config {
     public static final String ROUTE_UPSERT_URL = ENDPOINT_URI+"/api/route/upsert";
     public static final String ADD_USER_URL = ENDPOINT_URI+"/api/friend/addFriend";
     public static final String GET_FRIENDS_URL = ENDPOINT_URI+"/api/friend/getFriends/";
-
+    public static final String CREATE_MEETUP_SESSION_URL = ENDPOINT_URI+"/api/session/createSession";
+    public static final String GET_MEETUP_SESSION_BY_SESSID_URL = ENDPOINT_URI+"/api/session/getsessionbyid/";
+    public static final String GET_MEETUP_SESSION_BY_SESSCODE_URL = ENDPOINT_URI+"/api/session/getsession/";
 }
