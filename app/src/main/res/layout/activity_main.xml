@@ -8,11 +8,12 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/welcome_text"
@@ -30,12 +31,10 @@
                 android:id="@+id/launch_application_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="124dp"
-                android:layout_marginTop="200dp"
-                android:layout_marginEnd="100dp"
+                android:layout_marginStart="163dp"
+                android:layout_marginTop="100dp"
                 android:contentDescription="Start"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/launch_friendlist_button"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/welcome_text"
                 app:srcCompat="@drawable/ic_main_launch_64dp" />
 
@@ -43,14 +42,49 @@
                 android:id="@+id/launch_friendlist_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="100dp"
-                android:layout_marginTop="200dp"
-                android:layout_marginEnd="28dp"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="100dp"
                 android:contentDescription="Friendlist"
-                app:layout_constraintEnd_toStartOf="@+id/launch_application_button"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/welcome_text"
                 app:srcCompat="@drawable/ic_main_friendlist_button_64dp" />
+
+            <ImageButton
+                android:id="@+id/launch_session_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="100dp"
+                android:layout_marginEnd="50dp"
+                android:contentDescription="Session"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/welcome_text"
+                app:srcCompat="@drawable/ic_main_create_session_64dp" />
+
+            <EditText
+                android:id="@+id/session_code_input_field"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="50dp"
+                android:layout_marginEnd="8dp"
+                android:ems="10"
+                android:hint="Room Code"
+                android:inputType="text"
+                android:singleLine="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.4"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/launch_application_button" />
+
+            <Button
+                android:id="@+id/join_session_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:text="Join Session"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/session_code_input_field" />
 
         </android.support.constraint.ConstraintLayout>
     </ScrollView>

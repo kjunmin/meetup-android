@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GeocodeHelper {
-    Context context;
+    private Context context;
 
     public GeocodeHelper(Context context) {
         this.context = context;
@@ -32,7 +32,7 @@ public class GeocodeHelper {
             Log.e("TestError", "No Address Found");
         } else {
             Address address = addresses.get(0);
-            ArrayList<String> addressFragments = new ArrayList<String>();
+            ArrayList<String> addressFragments = new ArrayList<>();
 
             for(int i = 0; i <= address.getMaxAddressLineIndex(); i++) {
                 addressFragments.add(address.getAddressLine(i));

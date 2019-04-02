@@ -44,6 +44,7 @@ public class FriendListActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 attemptAddFriend();
+
                 return false;
             }
 
@@ -71,7 +72,7 @@ public class FriendListActivity extends AppCompatActivity {
             }
         });
     }
-//
+
 //    private boolean validateFields(String email) {
 //
 //        if (TextUtils.isEmpty(email)) {
@@ -96,6 +97,7 @@ public class FriendListActivity extends AppCompatActivity {
                     //Toast.makeText(FriendListActivity.this, response.getText(), Toast.LENGTH_SHORT).show();
                 }
                 Toast.makeText(FriendListActivity.this, response.getText(), Toast.LENGTH_SHORT).show();
+                loadFriendList(userDetails.getUserId());
             }
         });
     }
