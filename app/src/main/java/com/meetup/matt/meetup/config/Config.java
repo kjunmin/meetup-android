@@ -43,5 +43,7 @@ public class Config {
     public static final String ROUTE_UPSERT_URL = ENDPOINT_URI+"/api/route/upsert";
     public static final String ADD_USER_URL = ENDPOINT_URI+"/api/friend/addFriend";
     public static final String GET_FRIENDS_URL = ENDPOINT_URI+"/api/friend/getFriends/";
-
+    public static final String CREATE_MEETUP_SESSION_URL = ENDPOINT_URI+"/api/session/createSession";
+    public static final String GET_MEETUP_SESSION_BY_SESSID_URL = ENDPOINT_URI+"/api/session/getsessionbyid/";
+    public static final String GET_MEETUP_SESSION_BY_SESSCODE_URL = ENDPOINT_URI+"/api/session/getsession/";
 }
