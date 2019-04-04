@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -20,10 +21,11 @@ import com.meetup.matt.meetup.Client.MInstanceClient;
 import com.meetup.matt.meetup.Helpers.GeocodeHelper;
 import com.meetup.matt.meetup.Helpers.LocationHelper;
 import com.meetup.matt.meetup.Utils.LocationSettingsUtil;
+import com.meetup.matt.meetup.dto.MeetupSessionDTO;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
-
+    private MeetupSessionDTO meetupSessionDetails;
     private GoogleMap mMap;
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationRequest mLocationRequest;
@@ -35,20 +37,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        meetupSessionDetails = getIntent().getParcelableExtra("sessiondetails");
         setContentView(R.layout.activity_maps);
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
         view = findViewById(R.id.map);
+
+
         geocodeHelper = new GeocodeHelper(this);
-
-        (findViewById(R.id.btn_add_user)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
 
         //start location service
         startMapCallback();
@@ -61,7 +59,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
         if(LocationSettingsUtil.checkLocationPermission(this)) {
             mMap.setMyLocationEnabled(true);
-            mInstanceClient = new MInstanceClient(mMap, this, view);
+            mInstanceClient = new MInstanceClient(mMap, this, view, meetupSessionDetails);
             mInstanceClient.startService();
         }
     }

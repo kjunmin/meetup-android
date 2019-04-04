@@ -5,7 +5,7 @@ public class Config {
     //Environment settings
     public static final String ENV_PROD = "PRODUCTION";
     public static final String ENV_DEV = "DEVELOPMENT";
-    public static final String ENV = ENV_DEV;
+    public static final String ENV = ENV_PROD;
 
 
     //Local Storage Settings
@@ -44,6 +44,7 @@ public class Config {
     public static final String ADD_USER_URL = ENDPOINT_URI+"/api/friend/addFriend";
     public static final String GET_FRIENDS_URL = ENDPOINT_URI+"/api/friend/getFriends/";
     public static final String CREATE_MEETUP_SESSION_URL = ENDPOINT_URI+"/api/session/createSession";
-    public static final String GET_MEETUP_SESSION_BY_SESSID_URL = ENDPOINT_URI+"/api/session/getsessionbyid/";
+    public static final String GET_MEETUP_SESSION_BY_SESSID_URL = ENDPOINT_URI+"/api/session/getsessiondetails/";
     public static final String GET_MEETUP_SESSION_BY_SESSCODE_URL = ENDPOINT_URI+"/api/session/getsession/";
+    public static final String ADD_USER_TO_MEETUP_SESSION_URL = ENDPOINT_URI+"/api/session/addtosession";
 }
