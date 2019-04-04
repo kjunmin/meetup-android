@@ -5,17 +5,24 @@ import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 
+import com.github.nkzawa.emitter.Emitter;
+import com.github.nkzawa.socketio.client.Socket;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.gson.Gson;
 import com.google.maps.android.PolyUtil;
 import com.meetup.matt.meetup.Handlers.RouteHandler;
+import com.meetup.matt.meetup.Handlers.SocketHandler;
 import com.meetup.matt.meetup.Helpers.GeocodeHelper;
 import com.meetup.matt.meetup.Listeners.ApiResponseListener;
+import com.meetup.matt.meetup.Listeners.GetMeetupSessionListener;
 import com.meetup.matt.meetup.WebApi.RouteApi;
+import com.meetup.matt.meetup.WebApi.SessionApi;
+import com.meetup.matt.meetup.dto.MeetupSessionDTO;
 import com.meetup.matt.meetup.dto.RouteDTO;
 import com.meetup.matt.meetup.dto.UserDTO;
 
@@ -23,9 +30,10 @@ import java.util.List;
 
 public class MInstanceClient {
 
-    private List<UserDTO> userList;
+    private MeetupSessionDTO sessionDetails;
     private Marker lastUpdatedMarker;
     private Polyline lastUpdatedPolyline;
+    Socket socket;
     private GoogleMap map;
     private View view;
     private Context context;
@@ -33,10 +41,12 @@ public class MInstanceClient {
     private GeocodeHelper geocodeHelper;
     private RouteDTO route;
 
-    public MInstanceClient(GoogleMap map, Context context, View view) {
+    public MInstanceClient(GoogleMap map, Context context, View view, MeetupSessionDTO sessionDetails) {
         this.map = map;
         this.context = context;
         this.view = view;
+        this.sessionDetails = sessionDetails;
+        this.socket = SocketHandler.getSocket();
         this.lastUpdatedMarker = null;
         this.lastUpdatedPolyline = null;
         this.geocodeHelper = new GeocodeHelper(context);
@@ -45,15 +55,32 @@ public class MInstanceClient {
 
 
     private void enableMapActions() {
+        startSocketListener(socket);
         map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
-                markerDestinationPoint = latLng;
-                route.setDestination(latLng);
-                String addressValue = geocodeHelper.getAddressFromLatLng(latLng);
-                displayLocationUI(addressValue);
+                setMarkerDestinationPoint(latLng);
             }
         });
+    }
+
+    private void setMarkerDestinationPoint(LatLng latLng) {
+        markerDestinationPoint = latLng;
+        route.setDestination(latLng);
+        String addressValue = geocodeHelper.getAddressFromLatLng(latLng);
+        displayLocationUI(addressValue, latLng);
+    }
+
+    public void displayLocationUI(final String addressValue, final LatLng latLng) {
+        Snackbar.make(view, addressValue, Snackbar.LENGTH_LONG)
+                .setAction("Add Destination", new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        enableDestination();
+                        emitSocketOnDestinationSetEvent(socket, sessionDetails, latLng);
+                    }
+                }).show();
     }
 
 
@@ -93,16 +120,7 @@ public class MInstanceClient {
         lastUpdatedMarker = map.addMarker(new MarkerOptions().title("test").position(markerDestinationPoint));
     }
 
-    public void displayLocationUI(final String addressValue) {
-        Snackbar.make(view, addressValue, Snackbar.LENGTH_LONG)
-                .setAction("Add Destination", new View.OnClickListener() {
 
-                    @Override
-                    public void onClick(View v) {
-                        enableDestination();
-                    }
-                }).show();
-    }
 
     private void enableDestination() {
         if (route.getDestination() != null && route.getOrigin() != null && route != null) {
@@ -114,6 +132,28 @@ public class MInstanceClient {
 
     public void startService() {
         enableMapActions();
+    }
+
+    private void emitSocketOnDestinationSetEvent(Socket socket, MeetupSessionDTO meetupSessionDTO, LatLng destinationLatLng) {
+        meetupSessionDTO.setDestinationLocation(destinationLatLng);
+        Gson gson = new Gson();
+        String req = gson.toJson(meetupSessionDTO);
+        socket.emit(SocketHandler.Event.Server.ON_DESTINATION_UPDATE, req);
+    }
+
+    private void startSocketListener(Socket socket) {
+        socket.on(SocketHandler.Event.Client.ON_DESTINATION_UPDATE, new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                String sessionId = (String) args[0];
+                SessionApi.handleGetMeetupSessionBySessionId(sessionId, context, new GetMeetupSessionListener() {
+                    @Override
+                    public void onMeetupSessionRequestResponse(MeetupSessionDTO meetupSessionDetails) {
+                        sessionDetails = meetupSessionDetails;
+                    }
+                });
+            }
+        });
     }
 
     public void setRoute(RouteDTO route) {
