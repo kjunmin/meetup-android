@@ -12,6 +12,7 @@ public class UserDTO implements Parcelable {
     public UserDTO(Parcel in) {
         this.firstName = in.readString();
         this.lastName = in.readString();
+        this.email = in.readString();
         this.userId = in.readString();
         this.createdDate = in.readString();
     }
@@ -35,20 +36,23 @@ public class UserDTO implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.firstName);
         dest.writeString(this.lastName);
+        dest.writeString(this.email);
         dest.writeString(this.userId);
         dest.writeString(this.createdDate);
     }
 
     @SerializedName("firstname") private String firstName;
     @SerializedName("lastname") private String lastName;
+    @SerializedName("email") private String email;
     @SerializedName("user_id") private String userId;
     @SerializedName("created_timestamp") private String createdDate;
 
     public UserDTO() {};
 
-    public UserDTO(String firstName, String lastName, String userId, String createdDate) {
+    public UserDTO(String firstName, String lastName, String email, String userId, String createdDate) {
         this.firstName = firstName;
         this.lastName = lastName;
+        this.email = email;
         this.userId = userId;
         this.createdDate = createdDate;
 
@@ -84,5 +88,13 @@ public class UserDTO implements Parcelable {
 
     public void setCreatedDate(String createdDate) {
         this.createdDate = createdDate;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

@@ -11,18 +11,21 @@ import java.time.LocalDateTime;
 public class MeetupSessionDTO implements Parcelable {
     @SerializedName("id") private String sessionId;
     @SerializedName("session_code") private String sessionCode;
-    private UserDTO host;
-    private LatLng destinationLocation;
+    @SerializedName("host") private UserDTO host;
+    @SerializedName("users") private UserDTO[] users;
+    @SerializedName("destination_location") private LatLng destinationLocation;
     private String destinationAddress;
     private LocalDateTime createdTimestamp;
     private RouteDTO[] routes;
-    private UserDTO[] users;
+
 
     public MeetupSessionDTO(Parcel in) {
         //Order same as parcel dest
         this.sessionId = in.readString();
         this.sessionCode = in.readString();
         this.destinationAddress = in.readString();
+        this.host = (UserDTO)in.readTypedObject(UserDTO.CREATOR);
+        this.users = (UserDTO[])in.createTypedArray(UserDTO.CREATOR);
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
@@ -45,6 +48,8 @@ public class MeetupSessionDTO implements Parcelable {
         dest.writeString(this.sessionId);
         dest.writeString(this.sessionCode);
         dest.writeString(this.destinationAddress);
+        dest.writeTypedObject(host, 0);
+        dest.writeTypedArray(users, 0);
     }
 
     public MeetupSessionDTO() {};
