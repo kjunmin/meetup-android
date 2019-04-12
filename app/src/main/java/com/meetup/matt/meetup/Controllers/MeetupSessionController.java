@@ -14,8 +14,13 @@ public class MeetupSessionController {
         Gson gson = new Gson();
         try {
             ResponseDTO res = gson.fromJson(response, ResponseDTO.class);
+//            Log.d("Session", res.getData().toString());
             if (res.getStatus() == 1) {
                 MeetupSessionDTO meetupSessionDetails = gson.fromJson(res.getData(), MeetupSessionDTO.class);
+                if (meetupSessionDetails.getUsers() != null) {
+//                    Log.d("Session", meetupSessionDetails.getUsers().toString());
+                }
+
                 return meetupSessionDetails;
             }
             return null;

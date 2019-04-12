@@ -3,6 +3,7 @@ package com.meetup.matt.meetup.dto;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.SerializedName;
 
 import java.time.LocalDateTime;
@@ -15,6 +16,7 @@ public class UserDTO implements Parcelable {
         this.email = in.readString();
         this.userId = in.readString();
         this.createdDate = in.readString();
+        this.userLocation = in.readTypedObject(LatLng.CREATOR);
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
@@ -39,6 +41,7 @@ public class UserDTO implements Parcelable {
         dest.writeString(this.email);
         dest.writeString(this.userId);
         dest.writeString(this.createdDate);
+        dest.writeTypedObject(this.userLocation, 0);
     }
 
     @SerializedName("firstname") private String firstName;
@@ -46,16 +49,17 @@ public class UserDTO implements Parcelable {
     @SerializedName("email") private String email;
     @SerializedName("user_id") private String userId;
     @SerializedName("created_timestamp") private String createdDate;
+    @SerializedName("user_location") private LatLng userLocation;
 
     public UserDTO() {};
 
-    public UserDTO(String firstName, String lastName, String email, String userId, String createdDate) {
+    public UserDTO(String firstName, String lastName, String email, String userId, String createdDate, LatLng userLocation) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.userId = userId;
         this.createdDate = createdDate;
-
+        this.userLocation = userLocation;
     }
 
     public String getFirstName() {
@@ -96,5 +100,13 @@ public class UserDTO implements Parcelable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public LatLng getUserLocation() {
+        return userLocation;
+    }
+
+    public void setUserLocation(LatLng userLocation) {
+        this.userLocation = userLocation;
     }
 }

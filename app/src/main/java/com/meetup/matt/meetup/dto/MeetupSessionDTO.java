@@ -117,4 +117,5 @@ public class MeetupSessionDTO implements Parcelable {
     public void setUsers(UserDTO[] users) {
         this.users = users;
     }
+
 }
