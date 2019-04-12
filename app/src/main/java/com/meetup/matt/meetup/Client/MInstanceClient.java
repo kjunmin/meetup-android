@@ -15,6 +15,7 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.Gson;
 import com.google.maps.android.PolyUtil;
+import com.meetup.matt.meetup.Handlers.LocalStorageHandler;
 import com.meetup.matt.meetup.Handlers.RouteHandler;
 import com.meetup.matt.meetup.Handlers.SocketHandler;
 import com.meetup.matt.meetup.Helpers.GeocodeHelper;
@@ -22,24 +23,29 @@ import com.meetup.matt.meetup.Listeners.ApiResponseListener;
 import com.meetup.matt.meetup.Listeners.GetMeetupSessionListener;
 import com.meetup.matt.meetup.WebApi.RouteApi;
 import com.meetup.matt.meetup.WebApi.SessionApi;
+import com.meetup.matt.meetup.config.Config;
 import com.meetup.matt.meetup.dto.MeetupSessionDTO;
 import com.meetup.matt.meetup.dto.RouteDTO;
 import com.meetup.matt.meetup.dto.UserDTO;
+import com.squareup.okhttp.Route;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MInstanceClient {
 
+    private UserDTO userDetails;
     private MeetupSessionDTO sessionDetails;
-    private Marker lastUpdatedMarker;
-    private Polyline lastUpdatedPolyline;
+    private ArrayList<Marker> lastUpdatedMarkers;
+    private ArrayList<Polyline> lastUpdatedPolylines;
+    private Marker destinationMarker;
     Socket socket;
     private GoogleMap map;
     private View view;
     private Context context;
     private LatLng markerDestinationPoint;
     private GeocodeHelper geocodeHelper;
-    private RouteDTO route;
+    private boolean isDestinationSet;
 
     public MInstanceClient(GoogleMap map, Context context, View view, MeetupSessionDTO sessionDetails) {
         this.map = map;
@@ -47,10 +53,12 @@ public class MInstanceClient {
         this.view = view;
         this.sessionDetails = sessionDetails;
         this.socket = SocketHandler.getSocket();
-        this.lastUpdatedMarker = null;
-        this.lastUpdatedPolyline = null;
+        this.lastUpdatedMarkers = new ArrayList<>();
+        this.lastUpdatedPolylines = new ArrayList<>();
+        this.destinationMarker = null;
         this.geocodeHelper = new GeocodeHelper(context);
-        this.route = new RouteDTO.Builder(context).build();
+        this.isDestinationSet = false;
+        userDetails = LocalStorageHandler.getSessionUser(context, Config.SESSION_FILE_NAME);
     }
 
 
@@ -66,7 +74,6 @@ public class MInstanceClient {
 
     private void setMarkerDestinationPoint(LatLng latLng) {
         markerDestinationPoint = latLng;
-        route.setDestination(latLng);
         String addressValue = geocodeHelper.getAddressFromLatLng(latLng);
         displayLocationUI(addressValue, latLng);
     }
@@ -77,18 +84,49 @@ public class MInstanceClient {
 
                     @Override
                     public void onClick(View v) {
-                        enableDestination();
-                        emitSocketOnDestinationSetEvent(socket, sessionDetails, latLng);
+                        updateDestinationMarker(latLng);
+                        sessionDetails.setDestinationLocation(latLng);
+                        sessionDetails.setDestinationAddress(addressValue);
+                        isDestinationSet = true;
+                        emitSocketOnDestinationSetEvent(socket, sessionDetails);
                     }
                 }).show();
     }
 
 
-    public void startDirections(LatLng origin) {
-        route.setOrigin(origin);
+    public void onLocationChanged(LatLng userLocation) {
+
+        socket.emit(SocketHandler.Event.Server.ON_USER_LOCATION_CHANGE, userDetails.getUserId(), userLocation.latitude, userLocation.longitude);
+        SessionApi.handleGetMeetupSessionBySessionId(sessionDetails.getSessionId(), context, new GetMeetupSessionListener() {
+            @Override
+            public void onMeetupSessionRequestResponse(MeetupSessionDTO meetupSessionDetails) {
+                sessionDetails = meetupSessionDetails;
+                if (isDestinationSet) {
+                    Log.d("Session", sessionDetails.getDestinationLocation().toString());
+                    try {
+
+                        UserDTO[] userlist = sessionDetails.getUsers();
+                        ArrayList<RouteDTO> routes = new ArrayList<>();
+                        updateMarkers(lastUpdatedMarkers);
+                        for (UserDTO user : userlist) {
+
+                            Marker marker = map.addMarker(new MarkerOptions().title(user.getFirstName()).position(user.getUserLocation()));
+                            lastUpdatedMarkers.add(marker);
+                            RouteDTO route = new RouteDTO.Builder(context).setOrigin(user.getUserLocation()).setDestination(sessionDetails.getDestinationLocation()).build();
+                            routes.add(route);
+                        }
+                        plotPolylines(routes);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+        });
+
     }
 
-    private void getDistance() {
+    private void getDistance(RouteDTO route) {
         RouteApi.getDistanceMatrix(context, route, new ApiResponseListener() {
             @Override
             public void onApiResponse(String response) {
@@ -98,47 +136,56 @@ public class MInstanceClient {
         });
     }
 
-    private void plotPolyline() {
+    private void plotPolylines(ArrayList<RouteDTO> routes) {
 
-        RouteApi.getRouteInformation(context, route, new ApiResponseListener() {
-            @Override
-            public void onApiResponse(String response) {
-                String polyString = RouteHandler.getPolyline(response);
-                List<LatLng> points = PolyUtil.decode(polyString);
-                if (lastUpdatedPolyline != null) {
-                    lastUpdatedPolyline.remove();
+        updatePolylines(lastUpdatedPolylines);
+
+        for (RouteDTO route : routes) {
+            RouteApi.getRouteInformation(context, route, new ApiResponseListener() {
+                @Override
+                public void onApiResponse(String response) {
+                    String polyString = RouteHandler.getPolyline(response);
+                    List<LatLng> points = PolyUtil.decode(polyString);
+                    Polyline polyline = map.addPolyline(new PolylineOptions().addAll(points));
+                    lastUpdatedPolylines.add(polyline);
                 }
-                lastUpdatedPolyline = map.addPolyline(new PolylineOptions().addAll(points));
+            });
+        }
+    }
+
+    private void updateDestinationMarker(LatLng destination) {
+        if (destinationMarker != null) {
+            destinationMarker.remove();
+        }
+        destinationMarker = map.addMarker(new MarkerOptions().title("dest").position(destination));
+    }
+
+    private void updatePolylines(ArrayList<Polyline> lastUpdatedPolylines) {
+        for (Polyline polyline: lastUpdatedPolylines) {
+            if (polyline != null) {
+                polyline.remove();
             }
-        });
-    }
-
-    private void displayDestinationMarker() {
-        if (lastUpdatedMarker != null) {
-            lastUpdatedMarker.remove();
         }
-        lastUpdatedMarker = map.addMarker(new MarkerOptions().title("test").position(markerDestinationPoint));
     }
 
-
-
-    private void enableDestination() {
-        if (route.getDestination() != null && route.getOrigin() != null && route != null) {
-            plotPolyline();
+    private void updateMarkers(ArrayList<Marker> lastUpdatedMarkers) {
+        for (Marker marker : lastUpdatedMarkers) {
+            if (marker != null) {
+                marker.remove();
+            }
         }
-        getDistance();
-        displayDestinationMarker();
     }
+
 
     public void startService() {
         enableMapActions();
     }
 
-    private void emitSocketOnDestinationSetEvent(Socket socket, MeetupSessionDTO meetupSessionDTO, LatLng destinationLatLng) {
-        meetupSessionDTO.setDestinationLocation(destinationLatLng);
+    private void emitSocketOnDestinationSetEvent(Socket socket, MeetupSessionDTO meetupSessionDTO) {
         Gson gson = new Gson();
         String req = gson.toJson(meetupSessionDTO);
         socket.emit(SocketHandler.Event.Server.ON_DESTINATION_UPDATE, req);
+
     }
 
     private void startSocketListener(Socket socket) {
@@ -150,14 +197,12 @@ public class MInstanceClient {
                     @Override
                     public void onMeetupSessionRequestResponse(MeetupSessionDTO meetupSessionDetails) {
                         sessionDetails = meetupSessionDetails;
+                        isDestinationSet = true;
                     }
                 });
             }
         });
     }
 
-    public void setRoute(RouteDTO route) {
-        this.route = route;
-    }
 
 }

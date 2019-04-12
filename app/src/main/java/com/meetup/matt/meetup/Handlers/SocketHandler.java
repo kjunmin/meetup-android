@@ -16,6 +16,7 @@ public class SocketHandler {
             public static final String DELETE_USER_FROM_SESSION = "server_deleteuser";
             public static final String ON_HOST_START = "server_startmaps";
             public static final String ON_DESTINATION_UPDATE = "server_updatedest";
+            public static final String ON_USER_LOCATION_CHANGE = "server_updatelocation";
         }
 
         public class Client {
@@ -23,6 +24,7 @@ public class SocketHandler {
             public static final String ON_USER_DISCONNECT = "client_userdisconnect";
             public static final String ON_HOST_START = "client_startmaps";
             public static final String ON_DESTINATION_UPDATE = "client_updatedest";
+            public static final String ON_USER_LOCATION_CHANGE = "client_updatelocation";
         }
     }
 
