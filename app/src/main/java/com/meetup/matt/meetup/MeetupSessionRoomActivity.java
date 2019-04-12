@@ -114,7 +114,8 @@ public class MeetupSessionRoomActivity extends AppCompatActivity {
         socket.on(SocketHandler.Event.Client.ON_USER_JOIN, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                Log.d("Session", "User Joined");
+                String sessionId = (String)args[0];
+                Log.d("Session", "User Joined: " + sessionId);
             }
         });
 

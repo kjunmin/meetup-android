@@ -9,7 +9,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.meetup.matt.meetup.Controllers.MeetupSessionController;
 import com.meetup.matt.meetup.Handlers.ApiRequestHandler;
-import com.meetup.matt.meetup.Listeners.AddUserListener;
 import com.meetup.matt.meetup.Listeners.CreateMeetupSessionListener;
 import com.meetup.matt.meetup.Listeners.GetMeetupSessionListener;
 import com.meetup.matt.meetup.config.Config;

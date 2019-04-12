@@ -1,12 +1,10 @@
 package com.meetup.matt.meetup;
 
 import android.annotation.SuppressLint;
+import android.os.Bundle;
 import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -18,6 +16,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.meetup.matt.meetup.Client.MInstanceClient;
+import com.meetup.matt.meetup.Handlers.SocketHandler;
 import com.meetup.matt.meetup.Helpers.GeocodeHelper;
 import com.meetup.matt.meetup.Helpers.LocationHelper;
 import com.meetup.matt.meetup.Utils.LocationSettingsUtil;
@@ -45,13 +44,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         view = findViewById(R.id.map);
 
-
         geocodeHelper = new GeocodeHelper(this);
 
         //start location service
         startMapCallback();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SocketHandler.destroySocketConnection();
+    }
 
     @SuppressLint("MissingPermission")
     @Override
@@ -66,7 +69,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     public void onLocationChanged(LatLng latLng) {
-        mInstanceClient.startDirections(latLng);
+        mInstanceClient.onLocationChanged(latLng);
     }
 
 
