@@ -63,7 +63,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if(LocationSettingsUtil.checkLocationPermission(this)) {
             mMap.setMyLocationEnabled(true);
             mInstanceClient = new MInstanceClient(mMap, this, view, meetupSessionDetails);
-            mInstanceClient.startService();
+
         }
     }
 
