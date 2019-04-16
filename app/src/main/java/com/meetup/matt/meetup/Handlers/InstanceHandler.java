@@ -1,7 +1,6 @@
 package com.meetup.matt.meetup.Handlers;
 
 import android.content.Context;
-import android.graphics.Color;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;

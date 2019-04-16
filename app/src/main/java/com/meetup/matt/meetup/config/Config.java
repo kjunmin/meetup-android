@@ -5,7 +5,7 @@ public class Config {
     //Environment settings
     public static final String ENV_PROD = "PRODUCTION";
     public static final String ENV_DEV = "DEVELOPMENT";
-    public static final String ENV = ENV_DEV;
+    public static final String ENV = ENV_PROD;
 
 
     //Local Storage Settings

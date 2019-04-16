@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.media.Image;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -73,6 +76,25 @@ public class MainActivity extends AppCompatActivity {
                 handleJoinMeetupSession(mRoomCodeInputField.getText().toString());
             }
         });
+
+        mRoomCodeInputField.setFilters(new InputFilter[]{new InputFilter.AllCaps(), new InputFilter.LengthFilter(5)});
+
+//        mRoomCodeInputField.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                String changed = s.toString().toUpperCase();
+//                mRoomCodeInputField.setText(changed);
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//            }
+//        });
     }
 
     private void handleJoinMeetupSession(String sessionCode) {

@@ -44,6 +44,9 @@ public class MeetupSessionRoomActivity extends AppCompatActivity {
         mRoomCodeView = findViewById(R.id.room_code_textview);
         mLaunchMapsButton = findViewById(R.id.launch_maps_button);
         mSessionUserListView = findViewById(R.id.sessionlist_recycler_view);
+        mSessionUserListView.setHasFixedSize(false);
+        layoutManager = new LinearLayoutManager(MeetupSessionRoomActivity.this);
+        mSessionUserListView.setLayoutManager(layoutManager);
 
         userDetails = LocalStorageHandler.getSessionUser(getApplicationContext(), Config.SESSION_FILE_NAME);
 
@@ -52,10 +55,8 @@ public class MeetupSessionRoomActivity extends AppCompatActivity {
 
         sessionDetails = getIntent().getParcelableExtra("sessionDetails");
         if (sessionDetails != null) {
-            Log.d("Session", "FriendJoin");
            initializeFriendSession(sessionDetails);
         } else {
-            Log.d("Session", "HostCreate");
             mLaunchMapsButton.setVisibility(View.VISIBLE);
             initializeHostSession();
         }
@@ -85,7 +86,7 @@ public class MeetupSessionRoomActivity extends AppCompatActivity {
             @Override
             public void onMeetupSessionRequestResponse(MeetupSessionDTO meetupSessionDetails) {
                 emitSocketOnJoinEvent(socket, userDetails, meetupSessionDetails);
-                loadSessionUserList(meetupSessionDetails);
+                loadSessionUserList(meetupSessionDetails.getSessionId());
             }
         });
     };
@@ -100,6 +101,7 @@ public class MeetupSessionRoomActivity extends AppCompatActivity {
                 sessionDetails = meetupSessionDetails;
                 mRoomCodeView.setText(meetupSessionDetails.getSessionCode());
                 emitSocketOnJoinEvent(socket, hostDetails, meetupSessionDetails);
+                loadSessionUserList(meetupSessionDetails.getSessionId());
                 mLaunchMapsButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -114,8 +116,15 @@ public class MeetupSessionRoomActivity extends AppCompatActivity {
         socket.on(SocketHandler.Event.Client.ON_USER_JOIN, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                String sessionId = (String)args[0];
-                Log.d("Session", "User Joined: " + sessionId);
+                String sessionId = (String) args[0];
+                SessionApi.handleGetMeetupSessionBySessionId(sessionId, getApplicationContext(), new GetMeetupSessionListener() {
+                    @Override
+                    public void onMeetupSessionRequestResponse(MeetupSessionDTO meetupSessionDetails) {
+                        ArrayList<UserDTO> userList = new ArrayList<>(Arrays.asList(meetupSessionDetails.getUsers()));
+                        mAdapter = new FriendListAdapter(userList);
+                        mSessionUserListView.setAdapter(mAdapter);
+                    }
+                });
             }
         });
 
@@ -150,13 +159,10 @@ public class MeetupSessionRoomActivity extends AppCompatActivity {
         socket.emit(SocketHandler.Event.Server.ON_HOST_START, meetupSessionDTO.getSessionId());
     }
 
-    private void loadSessionUserList(MeetupSessionDTO sessionDetails) {
-        mSessionUserListView.setHasFixedSize(false);
-        layoutManager = new LinearLayoutManager(MeetupSessionRoomActivity.this);
-        mSessionUserListView.setLayoutManager(layoutManager);
+    private void loadSessionUserList(String sessionId) {
 
 
-        SessionApi.handleGetMeetupSessionBySessionId(sessionDetails.getSessionId(), getApplicationContext(), new GetMeetupSessionListener() {
+        SessionApi.handleGetMeetupSessionBySessionId(sessionId, getApplicationContext(), new GetMeetupSessionListener() {
             @Override
             public void onMeetupSessionRequestResponse(MeetupSessionDTO meetupSessionDetails) {
                 ArrayList<UserDTO> userList = new ArrayList<>(Arrays.asList(meetupSessionDetails.getUsers()));
