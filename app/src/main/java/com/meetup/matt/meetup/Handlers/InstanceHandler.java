@@ -1,7 +1,6 @@
 package com.meetup.matt.meetup.Handlers;
 
 import android.content.Context;
-import android.graphics.Color;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
@@ -12,6 +11,9 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.PolyUtil;
 import com.meetup.matt.meetup.Helpers.GeocodeHelper;
 import com.meetup.matt.meetup.Utils.PolylineOptionsUtil;
+import com.meetup.matt.meetup.Utils.SessionUtil;
+import com.meetup.matt.meetup.dto.SessionUserDTO;
+import com.meetup.matt.meetup.dto.UserDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,5 +60,15 @@ public class InstanceHandler {
         destinationMarker = map.addMarker(new MarkerOptions().title("dest").position(destination));
         return destinationMarker;
     }
+
+    public static ArrayList<SessionUserDTO> updateSessionUser(UserDTO user, ArrayList<SessionUserDTO> sessionUsers) {
+        for (SessionUserDTO sessionUserDTO : sessionUsers) {
+            if (user.getUserId() == sessionUserDTO.getUser().getUserId()) {
+                sessionUserDTO.getUser().setUserLocation(user.getUserLocation());
+            }
+        }
+        return sessionUsers;
+    }
+
 
 }

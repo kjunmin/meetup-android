@@ -57,20 +57,20 @@ public class FriendListActivity extends AppCompatActivity {
     }
 
     private void loadFriendList(String userId) {
-        FriendListApi.handleGetFriendList(userId, getApplicationContext(), new GetFriendListListener() {
-            @Override
-            public void onDataReceived(ArrayList<UserDTO> fList) {
-
-
-                mRecyclerView = findViewById(R.id.friendlist_recycler_view);
-                mRecyclerView.setHasFixedSize(false);
-                layoutManager = new LinearLayoutManager(FriendListActivity.this);
-                mRecyclerView.setLayoutManager(layoutManager);
-
-                mAdapter = new FriendListAdapter(fList);
-                mRecyclerView.setAdapter(mAdapter);
-            }
-        });
+//        FriendListApi.handleGetFriendList(userId, getApplicationContext(), new GetFriendListListener() {
+//            @Override
+//            public void onDataReceived(ArrayList<UserDTO> fList) {
+//
+//
+//                mRecyclerView = findViewById(R.id.friendlist_recycler_view);
+//                mRecyclerView.setHasFixedSize(false);
+//                layoutManager = new LinearLayoutManager(FriendListActivity.this);
+//                mRecyclerView.setLayoutManager(layoutManager);
+//
+//                mAdapter = new FriendListAdapter(fList);
+//                mRecyclerView.setAdapter(mAdapter);
+//            }
+//        });
     }
 
 //    private boolean validateFields(String email) {

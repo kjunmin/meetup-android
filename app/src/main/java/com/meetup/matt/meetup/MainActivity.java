@@ -4,8 +4,12 @@ import android.content.Intent;
 import android.media.Image;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -37,13 +41,12 @@ public class MainActivity extends AppCompatActivity {
 
         mWelcomeTextView.setText(String.format("Welcome %s!", userDetails.getFirstName()));
 
-
         ImageButton startApplicationButton = findViewById(R.id.launch_application_button);
         startApplicationButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, MapsActivity.class);
+                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
                 ActivityTransitionHelper.displayActivity(intent, false, getApplicationContext());
             }
         });
@@ -73,6 +76,8 @@ public class MainActivity extends AppCompatActivity {
                 handleJoinMeetupSession(mRoomCodeInputField.getText().toString());
             }
         });
+
+        mRoomCodeInputField.setFilters(new InputFilter[]{new InputFilter.AllCaps(), new InputFilter.LengthFilter(5)});
     }
 
     private void handleJoinMeetupSession(String sessionCode) {

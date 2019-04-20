@@ -16,15 +16,20 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.meetup.matt.meetup.Client.MInstanceClient;
+import com.meetup.matt.meetup.Handlers.LocalStorageHandler;
 import com.meetup.matt.meetup.Handlers.SocketHandler;
 import com.meetup.matt.meetup.Helpers.GeocodeHelper;
 import com.meetup.matt.meetup.Helpers.LocationHelper;
 import com.meetup.matt.meetup.Utils.LocationSettingsUtil;
+import com.meetup.matt.meetup.Utils.SessionUtil;
+import com.meetup.matt.meetup.config.Config;
 import com.meetup.matt.meetup.dto.MeetupSessionDTO;
+import com.meetup.matt.meetup.dto.UserDTO;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private MeetupSessionDTO meetupSessionDetails;
+    private UserDTO userDetails;
     private GoogleMap mMap;
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationRequest mLocationRequest;
@@ -37,6 +42,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         meetupSessionDetails = getIntent().getParcelableExtra("sessiondetails");
+        userDetails = LocalStorageHandler.getSessionUser(getApplicationContext(), Config.SESSION_FILE_NAME);
         setContentView(R.layout.activity_maps);
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -87,6 +93,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     },
                     Looper.myLooper());
         }
+
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        if (SessionUtil.isHost(userDetails, meetupSessionDetails)) {
+            SocketHandler.getSocket().emit(SocketHandler.Event.Server.DELETE_SESSION, meetupSessionDetails.getSessionId());
+        } else {
+            SocketHandler.getSocket().emit(SocketHandler.Event.Server.DELETE_USER_FROM_SESSION, userDetails.getUserId(), meetupSessionDetails.getSessionId());
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
 
     }
 }

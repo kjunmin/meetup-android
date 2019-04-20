@@ -36,6 +36,9 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
 
         <activity
             android:name=".MainActivity"
@@ -58,7 +61,11 @@
             android:name=".FriendListActivity"
             android:label="@string/title_activity_friend_list"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".MeetupSessionRoomActivity"></activity>
+        <activity android:name=".MeetupSessionRoomActivity" />
+        <activity
+            android:name=".ProfileActivity"
+            android:label="@string/title_activity_profile"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
