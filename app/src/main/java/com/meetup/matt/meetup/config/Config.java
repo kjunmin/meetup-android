@@ -1,12 +1,12 @@
 package com.meetup.matt.meetup.config;
 
+import com.meetup.matt.meetup.BuildConfig;
+
 public class Config {
 
     //Environment settings
-    public static final String ENV_PROD = "PRODUCTION";
-    public static final String ENV_DEV = "DEVELOPMENT";
-    public static final String ENV = ENV_PROD;
-
+    public static final String ENV_PROD = "release";
+    public static final String ENV_DEV = "debug";
 
     //Local Storage Settings
     public static final String PREF_FILE_NAME = "Preferences";
@@ -27,7 +27,7 @@ public class Config {
     public static final String PROD_URI = "http://meetupendpoint-env.g6hzsmdx3t.ap-southeast-1.elasticbeanstalk.com";
     public static final String DEV_URI = "http://10.0.2.2";
     public static final String DEV_PORT = "5000";
-    public static final String ENDPOINT_URI = ENV == ENV_PROD ? PROD_URI : DEV_URI + ":" + DEV_PORT;
+    public static final String ENDPOINT_URI = BuildConfig.BUILD_TYPE == ENV_PROD ? PROD_URI : DEV_URI + ":" + DEV_PORT;
 
 //    public static final String HOSTNAME= "ec2-54-243-228-140.compute-1.amazonaws.com";
 //    public static final String PORT = "5432";

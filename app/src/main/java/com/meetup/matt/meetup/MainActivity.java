@@ -9,6 +9,7 @@ import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -40,13 +41,12 @@ public class MainActivity extends AppCompatActivity {
 
         mWelcomeTextView.setText(String.format("Welcome %s!", userDetails.getFirstName()));
 
-
         ImageButton startApplicationButton = findViewById(R.id.launch_application_button);
         startApplicationButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, MapsActivity.class);
+                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
                 ActivityTransitionHelper.displayActivity(intent, false, getApplicationContext());
             }
         });
@@ -78,23 +78,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         mRoomCodeInputField.setFilters(new InputFilter[]{new InputFilter.AllCaps(), new InputFilter.LengthFilter(5)});
-
-//        mRoomCodeInputField.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence s, int start, int before, int count) {
-//                String changed = s.toString().toUpperCase();
-//                mRoomCodeInputField.setText(changed);
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable s) {
-//            }
-//        });
     }
 
     private void handleJoinMeetupSession(String sessionCode) {
