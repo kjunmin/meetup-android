@@ -16,8 +16,6 @@ public class MeetupSessionDTO implements Parcelable {
     @SerializedName("destination_location") private LatLng destinationLocation;
     private String destinationAddress;
     private LocalDateTime createdTimestamp;
-    private RouteDTO[] routes;
-
 
     public MeetupSessionDTO(Parcel in) {
         //Order same as parcel dest
@@ -100,14 +98,6 @@ public class MeetupSessionDTO implements Parcelable {
 
     public void setCreatedTimestamp(LocalDateTime createdTimestamp) {
         this.createdTimestamp = createdTimestamp;
-    }
-
-    public RouteDTO[] getRoutes() {
-        return routes;
-    }
-
-    public void setRoutes(RouteDTO[] routes) {
-        this.routes = routes;
     }
 
     public UserDTO[] getUsers() {

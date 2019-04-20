@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.meetup.matt.meetup.Handlers.SocketHandler;
 import com.meetup.matt.meetup.R;
 import com.meetup.matt.meetup.dto.MeetupSessionDTO;
-import com.meetup.matt.meetup.dto.SessionUserDTO;
 import com.meetup.matt.meetup.dto.UserDTO;
 
 import java.util.ArrayList;
@@ -27,20 +26,20 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
     protected static class FriendListViewHolder extends RecyclerView.ViewHolder {
         TextView flItemUsernameView;
         ImageView flItemAvatarView;
-        ImageButton flImageButtonView;
+        ImageButton flRemoveItemButton;
 
         private FriendListViewHolder(View v) {
             super(v);
             this.flItemUsernameView = v.findViewById(R.id.friendlist_item_username);
             this.flItemAvatarView =  v.findViewById(R.id.friendlist_item_avatar);
-            this.flImageButtonView = v.findViewById(R.id.delete_item_button);
+            this.flRemoveItemButton = v.findViewById(R.id.delete_item_button);
         }
     }
 
     public FriendListAdapter(ArrayList<UserDTO> dataset, MeetupSessionDTO sessionDetails, UserDTO hostUser, boolean isHost) {
         this.sessionDetails = sessionDetails;
         this.host = hostUser;
-        mDataset = dataset;
+        this.mDataset = dataset;
         this.isHost = isHost;
     }
 
@@ -60,7 +59,7 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
         ImageView flItemAvatarView = holder.flItemAvatarView;
         if (isHost) {
 
-            ImageButton flDeleteItemButton = holder.flImageButtonView;
+            ImageButton flDeleteItemButton = holder.flRemoveItemButton;
             flDeleteItemButton.setVisibility(View.VISIBLE);
             flDeleteItemButton.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -47,4 +47,5 @@ public class Config {
     public static final String GET_MEETUP_SESSION_BY_SESSID_URL = ENDPOINT_URI+"/api/session/getsessiondetails/";
     public static final String GET_MEETUP_SESSION_BY_SESSCODE_URL = ENDPOINT_URI+"/api/session/getsession/";
     public static final String ADD_USER_TO_MEETUP_SESSION_URL = ENDPOINT_URI+"/api/session/addtosession";
+    public static final String GET_MEETUP_SESSION_USER_BY_USERID = ENDPOINT_URI+"/api/session/getsessionuserdetails/";
 }
