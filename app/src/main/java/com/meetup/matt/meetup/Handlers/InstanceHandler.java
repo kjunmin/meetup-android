@@ -11,7 +11,6 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.PolyUtil;
 import com.meetup.matt.meetup.Helpers.GeocodeHelper;
 import com.meetup.matt.meetup.Utils.PolylineOptionsUtil;
-import com.meetup.matt.meetup.Utils.SessionUtil;
 import com.meetup.matt.meetup.dto.SessionUserDTO;
 import com.meetup.matt.meetup.dto.UserDTO;
 
@@ -19,14 +18,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InstanceHandler {
-    private Context context;
     private GoogleMap map;
-    private GeocodeHelper geocodeHelper;
+    private Context context;
 
     public InstanceHandler(Context context, GoogleMap map) {
-        this.context = context;
         this.map = map;
-        this.geocodeHelper = new GeocodeHelper(context);
+        this.context = context;
     }
 
     public Polyline plotPolyline(String apiRes, int colorVal) {
@@ -44,11 +41,13 @@ public class InstanceHandler {
 
 
     public Marker updateDestinationMarker(Marker destinationMarker, LatLng destination) {
+        Marker marker = destinationMarker;
         if (destinationMarker != null) {
-            destinationMarker.remove();
+            destinationMarker.setPosition(destination);
+        } else {
+            marker = map.addMarker(new MarkerOptions().title("dest").position(destination));
         }
-        destinationMarker = map.addMarker(new MarkerOptions().title("dest").position(destination));
-        return destinationMarker;
+        return  marker;
     }
 
     public ArrayList<SessionUserDTO> updateSessionUsers(UserDTO[] users, ArrayList<SessionUserDTO> sessionUsers) {

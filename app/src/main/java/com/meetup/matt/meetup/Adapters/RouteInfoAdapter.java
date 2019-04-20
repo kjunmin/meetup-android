@@ -1,7 +1,14 @@
 package com.meetup.matt.meetup.Adapters;
 
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +17,7 @@ import android.widget.TextView;
 
 import com.meetup.matt.meetup.R;
 import com.meetup.matt.meetup.Utils.PolylineOptionsUtil;
+import com.meetup.matt.meetup.Utils.SessionUtil;
 import com.meetup.matt.meetup.dto.SessionUserDTO;
 
 import java.util.ArrayList;
@@ -46,11 +54,20 @@ public class RouteInfoAdapter extends RecyclerView.Adapter<RouteInfoAdapter.Rout
     @Override
     public void onBindViewHolder(@NonNull RouteInfoAdapter.RouteInfoViewHolder holder, final int position) {
         TextView riItemUsernameView = holder.riItemUsernameView;
-        ImageButton riItemToggleDisplayButton = holder.riToggleDisplayButton;
+        final ImageButton riItemToggleDisplayButton = holder.riToggleDisplayButton;
 
         riItemUsernameView.setText(mDataset.get(position).getUser().getFirstName());
-        int colorVal = PolylineOptionsUtil.getColourByIndex(position);
-        riItemToggleDisplayButton.setBackgroundColor(colorVal);
+        final int colorVal = SessionUtil.getColourByIndex(position);
+        riItemToggleDisplayButton.setImageResource(R.drawable.ic_routeinfo_location_48dp);
+        riItemToggleDisplayButton.setBackgroundColor(Color.WHITE);
+        riItemToggleDisplayButton.setColorFilter(colorVal);
+        riItemToggleDisplayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean toggle = mDataset.get(position).getPolyline().isVisible();
+                mDataset.get(position).getPolyline().setVisible(!toggle);
+            }
+        });
     }
 
     @Override

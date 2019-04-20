@@ -124,6 +124,7 @@ public class RegisterActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), responseMessage, Toast.LENGTH_SHORT).show();
                 } else {
                     showProgress(false);
+                    mEmailView.setError(responseMessage);
                     Toast.makeText(getApplicationContext(), responseMessage, Toast.LENGTH_SHORT).show();
                 }
             }

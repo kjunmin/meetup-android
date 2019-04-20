@@ -1,7 +1,6 @@
 package com.meetup.matt.meetup.Client;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,9 +24,7 @@ import com.meetup.matt.meetup.Handlers.SocketHandler;
 import com.meetup.matt.meetup.Helpers.GeocodeHelper;
 import com.meetup.matt.meetup.Listeners.ApiResponseListener;
 import com.meetup.matt.meetup.Listeners.GetMeetupSessionListener;
-import com.meetup.matt.meetup.MapsActivity;
 import com.meetup.matt.meetup.R;
-import com.meetup.matt.meetup.Utils.PolylineOptionsUtil;
 import com.meetup.matt.meetup.Utils.SessionUtil;
 import com.meetup.matt.meetup.WebApi.RouteApi;
 import com.meetup.matt.meetup.WebApi.SessionApi;
@@ -147,8 +144,12 @@ public class MInstanceClient {
             SessionApi.handleGetMeetupSessionBySessionId(sessionDetails.getSessionId(), context, new GetMeetupSessionListener() {
                 @Override
                 public void onMeetupSessionRequestResponse(MeetupSessionDTO meetupSessionDetails) {
-                    sessionUsers = instanceHandler.updateSessionUsers(meetupSessionDetails.getUsers(), sessionUsers);
-                    updateMapObjects(sessionUsers);
+                    try {
+                        sessionUsers = instanceHandler.updateSessionUsers(meetupSessionDetails.getUsers(), sessionUsers);
+                        updateMapObjects(sessionUsers);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             });
 
@@ -157,53 +158,30 @@ public class MInstanceClient {
 
     private void updateMapObjects(ArrayList<SessionUserDTO> sessionUsers) {
         for (int i = 0; i < sessionUsers.size(); i++) {
-            if (!isDeviceUser(sessionUsers.get(i).getUser())) {
-                updateOtherUser(sessionUsers.get(i), i);
+            updateUser(sessionUsers.get(i), i);
+        }
+    }
+
+
+    private void updateUser(final SessionUserDTO sessionUser, final int userIndex) {
+        if (!isDeviceUser(sessionUser.getUser())) {
+            if (sessionUser.getMarker() == null) {
+                Marker marker = map.addMarker(new MarkerOptions().title(sessionUser.getUser().getFirstName())
+                        .position(sessionUser.getUser().getUserLocation())
+                        .icon(SessionUtil.getBitmapDescriptor(userIndex)));
+                sessionUser.setMarker(marker);
             } else {
-                updateUser(sessionUsers.get(i));
+                sessionUser.getMarker().setPosition(sessionUser.getUser().getUserLocation());
             }
         }
-    }
 
-
-    private void updateUser(final SessionUserDTO sessionUser) {
         RouteDTO route = new RouteDTO.Builder(context).setOrigin(sessionUser.getUser().getUserLocation()).setDestination(sessionDetails.getDestinationLocation()).build();
         if (sessionUser.getPolyline() == null) {
             RouteApi.getRouteInformation(context, route, new ApiResponseListener() {
                 @Override
                 public void onApiResponse(String response) {
                     Polyline polyline;
-                    polyline = instanceHandler.plotPolyline(response, Color.BLUE);
-                    sessionUser.setPolyline(polyline);
-                }
-            });
-        } else {
-            RouteApi.getRouteInformation(context, route, new ApiResponseListener() {
-                @Override
-                public void onApiResponse(String response) {
-                    String polyString = RouteHandler.getPolyline(response);
-                    List<LatLng> points = PolyUtil.decode(polyString);
-                    sessionUser.getPolyline().setPoints(points);
-                }
-            });
-        }
-
-    }
-
-    private void updateOtherUser(final SessionUserDTO sessionUser, final int userIndex) {
-        if (sessionUser.getMarker() == null) {
-            Marker marker = map.addMarker(new MarkerOptions().title(sessionUser.getUser().getFirstName()).position(sessionUser.getUser().getUserLocation()));
-            sessionUser.setMarker(marker);
-        } else {
-            sessionUser.getMarker().setPosition(sessionUser.getUser().getUserLocation());
-        }
-        RouteDTO route = new RouteDTO.Builder(context).setOrigin(sessionUser.getUser().getUserLocation()).setDestination(sessionDetails.getDestinationLocation()).build();
-        if (sessionUser.getPolyline() == null) {
-            RouteApi.getRouteInformation(context, route, new ApiResponseListener() {
-                @Override
-                public void onApiResponse(String response) {
-                    Polyline polyline;
-                    polyline = instanceHandler.plotPolyline(response, PolylineOptionsUtil.getColourByIndex(userIndex));
+                    polyline = instanceHandler.plotPolyline(response, SessionUtil.getColourByIndex(userIndex));
                     sessionUser.setPolyline(polyline);
                 }
             });
@@ -246,6 +224,7 @@ public class MInstanceClient {
                     @Override
                     public void onMeetupSessionRequestResponse(MeetupSessionDTO meetupSessionDetails) {
                         sessionDetails = meetupSessionDetails;
+                        destinationMarker = instanceHandler.updateDestinationMarker(destinationMarker, sessionDetails.getDestinationLocation());
                         isDestinationSet = true;
                     }
                 });

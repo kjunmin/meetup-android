@@ -1,31 +1,13 @@
 package com.meetup.matt.meetup.Utils;
 
-import android.graphics.Color;
-
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class PolylineOptionsUtil {
-
-    public static int getColourByIndex(int index) {
-        Map colourMap = new HashMap();
-        colourMap.put(0, Color.MAGENTA);
-        colourMap.put(1, Color.RED);
-        colourMap.put(2, Color.GREEN);
-        colourMap.put(3, Color.YELLOW);
-        colourMap.put(4, Color.CYAN);
-        if (index < colourMap.size()) {
-            return (int)colourMap.get(index);
-        } else {
-            return Color.RED;
-        }
-    }
 
     public static List<LatLng> getOverlappingPoints(ArrayList<List<LatLng>> polylinePoints) {
         for (int i = 0; i< polylinePoints.size(); i++) {
