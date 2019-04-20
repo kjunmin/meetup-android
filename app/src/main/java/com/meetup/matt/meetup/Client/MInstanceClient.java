@@ -164,47 +164,11 @@ public class MInstanceClient {
 
 
     private void updateUser(final SessionUserDTO sessionUser, final int userIndex) {
-        if (!isDeviceUser(sessionUser.getUser())) {
-            if (sessionUser.getMarker() == null) {
-                Marker marker = map.addMarker(new MarkerOptions().title(sessionUser.getUser().getFirstName())
-                        .position(sessionUser.getUser().getUserLocation())
-                        .icon(SessionUtil.getBitmapDescriptor(userIndex)));
-                sessionUser.setMarker(marker);
-            } else {
-                sessionUser.getMarker().setPosition(sessionUser.getUser().getUserLocation());
-            }
-        }
-
         RouteDTO route = new RouteDTO.Builder(context).setOrigin(sessionUser.getUser().getUserLocation()).setDestination(sessionDetails.getDestinationLocation()).build();
-        if (sessionUser.getPolyline() == null) {
-            RouteApi.getRouteInformation(context, route, new ApiResponseListener() {
-                @Override
-                public void onApiResponse(String response) {
-                    Polyline polyline;
-                    polyline = instanceHandler.plotPolyline(response, SessionUtil.getColourByIndex(userIndex));
-                    sessionUser.setPolyline(polyline);
-                }
-            });
-        } else {
-            RouteApi.getRouteInformation(context, route, new ApiResponseListener() {
-                @Override
-                public void onApiResponse(String response) {
-                    String polyString = RouteHandler.getPolyline(response);
-                    List<LatLng> points = PolyUtil.decode(polyString);
-                    sessionUser.getPolyline().setPoints(points);
-                }
-            });
+        if (!isDeviceUser(sessionUser.getUser())) {
+            instanceHandler.setMarker(route, sessionUser, userIndex);
         }
-    }
-
-    private void getDistance(RouteDTO route) {
-        RouteApi.getDistanceMatrix(context, route, new ApiResponseListener() {
-            @Override
-            public void onApiResponse(String response) {
-                String dist = RouteHandler.getDistanceMatrix(response);
-                Log.d("API dist", dist);
-            }
-        });
+        instanceHandler.setPolyline(route, sessionUser, userIndex);
     }
 
 

@@ -11,11 +11,14 @@ import com.meetup.matt.meetup.Controllers.MeetupSessionController;
 import com.meetup.matt.meetup.Handlers.ApiRequestHandler;
 import com.meetup.matt.meetup.Listeners.CreateMeetupSessionListener;
 import com.meetup.matt.meetup.Listeners.GetMeetupSessionListener;
+import com.meetup.matt.meetup.Listeners.GetSessionUserListener;
 import com.meetup.matt.meetup.config.Config;
 import com.meetup.matt.meetup.dto.MeetupSessionDTO;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.meetup.matt.meetup.config.Config.GET_MEETUP_SESSION_USER_BY_USERID;
 
 public class SessionApi {
     private static Map buildSessionRequestObject(MeetupSessionDTO meetupSessionDTO) {
@@ -105,6 +108,23 @@ public class SessionApi {
             @Override
             public void onResponse(String response) {
                 callback.onMeetupSessionRequestResponse(MeetupSessionController.getMeetupSessionDetails(response));
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("Volley", error.toString());
+            }
+        });
+        ApiRequestHandler.getInstance(context).addToRequestQueue(req);
+    }
+
+    public static void handleGetMeetupSessionUserByUserId(String userId, Context context, final GetSessionUserListener callback) {
+        String url = Config.GET_MEETUP_SESSION_USER_BY_USERID + userId;
+
+        StringRequest req = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                callback.onSessionUserRequestResponse(MeetupSessionController.getMeetupSessionUserDetails(response));
             }
         }, new Response.ErrorListener() {
             @Override

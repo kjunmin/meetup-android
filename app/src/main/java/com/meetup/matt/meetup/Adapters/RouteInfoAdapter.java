@@ -64,8 +64,10 @@ public class RouteInfoAdapter extends RecyclerView.Adapter<RouteInfoAdapter.Rout
         riItemToggleDisplayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean toggle = mDataset.get(position).getPolyline().isVisible();
-                mDataset.get(position).getPolyline().setVisible(!toggle);
+                if (mDataset.get(position).getPolyline() != null) {
+                    boolean toggle = mDataset.get(position).getPolyline().isVisible();
+                    mDataset.get(position).getPolyline().setVisible(!toggle);
+                }
             }
         });
     }

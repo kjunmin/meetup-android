@@ -45,6 +45,7 @@
                     android:id="@+id/email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/libre_franklin_thin"
                     android:hint="@string/prompt_email"
                     android:importantForAutofill="no"
                     android:inputType="textEmailAddress"
@@ -61,6 +62,7 @@
                     android:id="@+id/password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/libre_franklin_thin"
                     android:hint="@string/prompt_password"
                     android:imeActionId="6"
                     android:imeActionLabel="@string/action_sign_in_short"
@@ -78,7 +80,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:background="@drawable/round_buttons"
+                android:fontFamily="@font/roboto_bold"
                 android:text="@string/action_login"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="22sp"
                 android:textStyle="bold" />
 
             <Button
@@ -87,7 +94,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:background="@drawable/round_buttons"
+                android:fontFamily="@font/roboto_bold"
                 android:text="@string/action_register"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="22sp"
                 android:textStyle="bold" />
 
         </LinearLayout>

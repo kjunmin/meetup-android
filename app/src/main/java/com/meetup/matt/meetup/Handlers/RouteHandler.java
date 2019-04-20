@@ -2,6 +2,7 @@ package com.meetup.matt.meetup.Handlers;
 
 import android.util.Log;
 
+import com.google.android.gms.maps.model.Marker;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -12,6 +13,7 @@ import org.json.JSONObject;
 
 
 public class RouteHandler {
+
 
     public static String getDistanceMatrix(String response) {
         String distance = null;
