@@ -48,7 +48,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        view = findViewById(R.id.map);
+        view = findViewById(R.id.map_session_view);
 
         geocodeHelper = new GeocodeHelper(this);
 

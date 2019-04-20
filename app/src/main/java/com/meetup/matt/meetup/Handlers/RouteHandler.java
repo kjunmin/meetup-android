@@ -38,7 +38,6 @@ public class RouteHandler {
             JSONObject routeObj = (JSONObject)res.get(0);
             JSONObject polyObj = (JSONObject) routeObj.get("overview_polyline");
             polyline = polyObj.getString("points");
-            Log.d("JSON", polyline);
         } catch (JSONException e) {
             e.printStackTrace();
         }

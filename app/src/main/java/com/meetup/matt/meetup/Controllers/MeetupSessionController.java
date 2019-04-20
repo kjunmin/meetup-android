@@ -7,7 +7,7 @@ import com.google.gson.JsonSyntaxException;
 import com.meetup.matt.meetup.dto.MeetupSessionDTO;
 import com.meetup.matt.meetup.dto.ResponseDTO;
 
-public class MeetupSessionController {
+public final class MeetupSessionController {
 
 
     public static MeetupSessionDTO getMeetupSessionDetails(String response) {

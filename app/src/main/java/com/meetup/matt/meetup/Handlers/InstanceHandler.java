@@ -30,28 +30,18 @@ public class InstanceHandler {
     }
 
     public Polyline plotPolyline(String apiRes, int colorVal) {
-        String polyString = RouteHandler.getPolyline(apiRes);
-        List<LatLng> points = PolyUtil.decode(polyString);
-        PolylineOptions pOptions = PolylineOptionsUtil.buildPolylineOptions(colorVal);
-        Polyline polyline = map.addPolyline(pOptions.addAll(points));
+        Polyline polyline = null;
+        try {
+            String polyString = RouteHandler.getPolyline(apiRes);
+            List<LatLng> points = PolyUtil.decode(polyString);
+            PolylineOptions pOptions = PolylineOptionsUtil.buildPolylineOptions(colorVal);
+            polyline = map.addPolyline(pOptions.addAll(points));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return polyline;
     }
 
-    public void removePolylines(ArrayList<Polyline> lastUpdatedPolylines) {
-        for (Polyline polyline: lastUpdatedPolylines) {
-            if (polyline != null) {
-                polyline.remove();
-            }
-        }
-    }
-
-    public void removeMarkers(ArrayList<Marker> lastUpdatedMarkers) {
-        for (Marker marker : lastUpdatedMarkers) {
-            if (marker != null) {
-                marker.remove();
-            }
-        }
-    }
 
     public Marker updateDestinationMarker(Marker destinationMarker, LatLng destination) {
         if (destinationMarker != null) {
@@ -61,11 +51,12 @@ public class InstanceHandler {
         return destinationMarker;
     }
 
-    public static ArrayList<SessionUserDTO> updateSessionUser(UserDTO user, ArrayList<SessionUserDTO> sessionUsers) {
-        for (SessionUserDTO sessionUserDTO : sessionUsers) {
-            if (user.getUserId() == sessionUserDTO.getUser().getUserId()) {
-                sessionUserDTO.getUser().setUserLocation(user.getUserLocation());
-            }
+    public ArrayList<SessionUserDTO> updateSessionUsers(UserDTO[] users, ArrayList<SessionUserDTO> sessionUsers) {
+        for (UserDTO user : users) {
+            for (SessionUserDTO sessionUser : sessionUsers)
+                if (user.getUserId().equals(sessionUser.getUser().getUserId())) {
+                    sessionUser.getUser().setUserLocation(user.getUserLocation());
+                }
         }
         return sessionUsers;
     }

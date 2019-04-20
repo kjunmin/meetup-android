@@ -3,6 +3,8 @@ package com.meetup.matt.meetup.Client;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 
@@ -15,6 +17,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.gson.Gson;
 import com.google.maps.android.PolyUtil;
+import com.meetup.matt.meetup.Adapters.RouteInfoAdapter;
 import com.meetup.matt.meetup.Handlers.InstanceHandler;
 import com.meetup.matt.meetup.Handlers.LocalStorageHandler;
 import com.meetup.matt.meetup.Handlers.RouteHandler;
@@ -22,6 +25,8 @@ import com.meetup.matt.meetup.Handlers.SocketHandler;
 import com.meetup.matt.meetup.Helpers.GeocodeHelper;
 import com.meetup.matt.meetup.Listeners.ApiResponseListener;
 import com.meetup.matt.meetup.Listeners.GetMeetupSessionListener;
+import com.meetup.matt.meetup.MapsActivity;
+import com.meetup.matt.meetup.R;
 import com.meetup.matt.meetup.Utils.PolylineOptionsUtil;
 import com.meetup.matt.meetup.Utils.SessionUtil;
 import com.meetup.matt.meetup.WebApi.RouteApi;
@@ -48,6 +53,9 @@ public class MInstanceClient {
     private boolean isDestinationSet;
     private InstanceHandler instanceHandler;
     private ArrayList<SessionUserDTO> sessionUsers;
+    private RecyclerView mRouteInfoRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager layoutManager;
 
     public MInstanceClient(GoogleMap map, Context context, View view, MeetupSessionDTO sessionDetails) {
         this.map = map;
@@ -63,6 +71,15 @@ public class MInstanceClient {
         sessionUsers = new ArrayList<>();
 
         startService();
+    }
+
+    private void loadRouteInfoListView(ArrayList<SessionUserDTO> sessionUsers) {
+        mRouteInfoRecyclerView = view.findViewById(R.id.routeinfo_recycler_view);
+        mRouteInfoRecyclerView.setHasFixedSize(false);
+        layoutManager = new LinearLayoutManager(context);
+        mRouteInfoRecyclerView.setLayoutManager(layoutManager);
+        mAdapter = new RouteInfoAdapter(sessionUsers);
+        mRouteInfoRecyclerView.setAdapter(mAdapter);
     }
 
 
@@ -81,8 +98,10 @@ public class MInstanceClient {
                     sessionUser.setUser(user);
                     sessionUsers.add(sessionUser);
                 }
+                loadRouteInfoListView(sessionUsers);
             }
         });
+
     }
 
     private void enableMapActions() {
@@ -128,12 +147,7 @@ public class MInstanceClient {
             SessionApi.handleGetMeetupSessionBySessionId(sessionDetails.getSessionId(), context, new GetMeetupSessionListener() {
                 @Override
                 public void onMeetupSessionRequestResponse(MeetupSessionDTO meetupSessionDetails) {
-                    for (UserDTO user : meetupSessionDetails.getUsers()) {
-                        for (SessionUserDTO sessionUser : sessionUsers)
-                            if (user.getUserId().equals(sessionUser.getUser().getUserId())) {
-                                sessionUser.getUser().setUserLocation(user.getUserLocation());
-                            }
-                    }
+                    sessionUsers = instanceHandler.updateSessionUsers(meetupSessionDetails.getUsers(), sessionUsers);
                     updateMapObjects(sessionUsers);
                 }
             });
@@ -150,7 +164,6 @@ public class MInstanceClient {
             }
         }
     }
-
 
 
     private void updateUser(final SessionUserDTO sessionUser) {
@@ -214,11 +227,6 @@ public class MInstanceClient {
                 Log.d("API dist", dist);
             }
         });
-    }
-
-    private void plotPolyline(RouteDTO route, final int colorVal) {
-
-
     }
 
 
