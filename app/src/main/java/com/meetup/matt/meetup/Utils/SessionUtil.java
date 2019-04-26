@@ -34,6 +34,6 @@ public class SessionUtil {
     }
 
     public static boolean isHost(UserDTO userDetails, MeetupSessionDTO sessionDetails) {
-        return userDetails.getUserId().equals(sessionDetails.getHost().getUserId());
+        return userDetails.getUserId().equals(sessionDetails.getHost().getUser().getUserId());
     }
 }

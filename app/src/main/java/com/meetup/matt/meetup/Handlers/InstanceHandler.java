@@ -14,6 +14,7 @@ import com.meetup.matt.meetup.Listeners.ApiResponseListener;
 import com.meetup.matt.meetup.Utils.PolylineOptionsUtil;
 import com.meetup.matt.meetup.Utils.SessionUtil;
 import com.meetup.matt.meetup.WebApi.RouteApi;
+import com.meetup.matt.meetup.dto.MeetupSessionDTO;
 import com.meetup.matt.meetup.dto.RouteDTO;
 import com.meetup.matt.meetup.dto.SessionUserDTO;
 import com.meetup.matt.meetup.dto.UserDTO;
@@ -52,6 +53,10 @@ public class InstanceHandler {
         }
     }
 
+    public void buildInfoLayer(RouteDTO route, MeetupSessionDTO meetupSession, SessionUserDTO sessionUser, int userIndex) {
+
+    }
+
     public void setMarker(RouteDTO route, final SessionUserDTO sessionUser, final int userIndex) {
         if (sessionUser.getMarker() == null) {
             RouteApi.getDistanceMatrix(context, route, new ApiResponseListener() {
@@ -59,9 +64,9 @@ public class InstanceHandler {
                 public void onApiResponse(String response) {
                     String dist = RouteHandler.getDistanceMatrix(response);
                     Marker marker = map.addMarker(new MarkerOptions().title(sessionUser.getUser().getFirstName())
-                            .position(sessionUser.getUser().getUserLocation())
+                            .position(sessionUser.getUserLocation())
                             .icon(SessionUtil.getBitmapDescriptor(userIndex))
-                            .snippet("Distance: " + dist));
+                            .snippet(MarkerHandler.buildInfoWindow(dist)));
                     marker.showInfoWindow();
                     sessionUser.setMarker(marker);
                 }
@@ -72,8 +77,8 @@ public class InstanceHandler {
                 public void onApiResponse(String response) {
                     String dist = RouteHandler.getDistanceMatrix(response);
                     Marker marker = sessionUser.getMarker();
-                    marker.setSnippet("Distance: " + dist);
-                    marker.setPosition(sessionUser.getUser().getUserLocation());
+                    marker.setSnippet(MarkerHandler.buildInfoWindow(dist));
+                    marker.setPosition(sessionUser.getUserLocation());
                     marker.showInfoWindow();
                     sessionUser.setMarker(marker);
                 }
@@ -102,16 +107,16 @@ public class InstanceHandler {
         if (destinationMarker != null) {
             destinationMarker.setPosition(destination);
         } else {
-            marker = map.addMarker(new MarkerOptions().title("dest").position(destination));
+            marker = map.addMarker(new MarkerOptions().title("Destination").position(destination));
         }
         return  marker;
     }
 
-    public ArrayList<SessionUserDTO> updateSessionUsers(UserDTO[] users, ArrayList<SessionUserDTO> sessionUsers) {
-        for (UserDTO user : users) {
+    public ArrayList<SessionUserDTO> updateSessionUsers(SessionUserDTO[] users, ArrayList<SessionUserDTO> sessionUsers) {
+        for (SessionUserDTO user : users) {
             for (SessionUserDTO sessionUser : sessionUsers)
-                if (user.getUserId().equals(sessionUser.getUser().getUserId())) {
-                    sessionUser.getUser().setUserLocation(user.getUserLocation());
+                if (user.getUser().getUserId().equals(sessionUser.getUser().getUserId())) {
+                    sessionUser.setUserLocation(user.getUserLocation());
                 }
         }
         return sessionUsers;

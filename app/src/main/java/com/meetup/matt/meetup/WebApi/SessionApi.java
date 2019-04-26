@@ -12,18 +12,17 @@ import com.meetup.matt.meetup.Handlers.ApiRequestHandler;
 import com.meetup.matt.meetup.Listeners.CreateMeetupSessionListener;
 import com.meetup.matt.meetup.Listeners.GetMeetupSessionListener;
 import com.meetup.matt.meetup.Listeners.GetSessionUserListener;
+import com.meetup.matt.meetup.Listeners.GetSessionUsersListener;
 import com.meetup.matt.meetup.config.Config;
 import com.meetup.matt.meetup.dto.MeetupSessionDTO;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.meetup.matt.meetup.config.Config.GET_MEETUP_SESSION_USER_BY_USERID;
-
 public class SessionApi {
     private static Map buildSessionRequestObject(MeetupSessionDTO meetupSessionDTO) {
         final Map<String, String> meetupSessionObject = new HashMap<>();
-        meetupSessionObject.put("host_id", meetupSessionDTO.getHost().getUserId());
+        meetupSessionObject.put("host_id", meetupSessionDTO.getHost().getUser().getUserId());
         return meetupSessionObject;
     }
 
@@ -33,6 +32,19 @@ public class SessionApi {
         addUserObject.put("host_id", hostId);
         addUserObject.put("session_id", sessionId);
         return addUserObject;
+    }
+
+    private static Map buildGetSessionUserObject(String userId, String sessionId) {
+        final Map<String, String> getSessionUserObj = new HashMap<>();
+        getSessionUserObj.put("user_id", userId);
+        getSessionUserObj.put("session_id", sessionId);
+        return getSessionUserObj;
+    }
+
+    private static Map buildGetSessionUsersObject(String sessionId) {
+        final Map<String, String> getSessionUsersObj = new HashMap<>();
+        getSessionUsersObj.put("session_id", sessionId);
+        return getSessionUsersObj;
     }
 
     public static void handleCreateMeetupSession(MeetupSessionDTO meetupSessionDTO, Context context, final CreateMeetupSessionListener callback) {
@@ -118,10 +130,12 @@ public class SessionApi {
         ApiRequestHandler.getInstance(context).addToRequestQueue(req);
     }
 
-    public static void handleGetMeetupSessionUserByUserId(String userId, Context context, final GetSessionUserListener callback) {
-        String url = Config.GET_MEETUP_SESSION_USER_BY_USERID + userId;
+    public static void handleGetMeetupSessionUser(String userId, String sessionId, Context context, final GetSessionUserListener callback) {
+        String url = Config.GET_MEETUP_SESSION_USER;
 
-        StringRequest req = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+        final Map getSessionUserObj = buildGetSessionUserObject(userId, sessionId);
+
+        StringRequest req = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 callback.onSessionUserRequestResponse(MeetupSessionController.getMeetupSessionUserDetails(response));
@@ -131,7 +145,36 @@ public class SessionApi {
             public void onErrorResponse(VolleyError error) {
                 Log.d("Volley", error.toString());
             }
-        });
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                return getSessionUserObj;
+            }
+        };
+        ApiRequestHandler.getInstance(context).addToRequestQueue(req);
+    }
+
+    public static void handleGetMeetupSessionUsers(String sessionId, Context context, final GetSessionUsersListener callback) {
+        String url = Config.GET_MEETUP_SESSION_USERS;
+
+        final Map getSessionUsersObj = buildGetSessionUsersObject(sessionId);
+
+        StringRequest req = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                callback.onSessionUsersRequestResponse(MeetupSessionController.getMeetupSessionUsersDetails(response));
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("Volley", error.toString());
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                return getSessionUsersObj;
+            }
+        };
         ApiRequestHandler.getInstance(context).addToRequestQueue(req);
     }
 }

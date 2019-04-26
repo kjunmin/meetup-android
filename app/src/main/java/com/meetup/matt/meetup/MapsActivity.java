@@ -41,7 +41,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        meetupSessionDetails = getIntent().getParcelableExtra("sessiondetails");
+        meetupSessionDetails = LocalStorageHandler.getSessionDetails(getApplicationContext(), Config.SESSION_FILE_NAME);
         userDetails = LocalStorageHandler.getSessionUser(getApplicationContext(), Config.SESSION_FILE_NAME);
         setContentView(R.layout.activity_maps);
         mapFragment = (SupportMapFragment) getSupportFragmentManager()

@@ -28,9 +28,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="50dp"
                     android:layout_marginEnd="10dp"
-                    android:layout_marginBottom="10dp"
+                    android:layout_marginBottom="50dp"
                     android:fontFamily="@font/roboto_bold"
                     android:text="placeholder"
                     android:textAlignment="center"
@@ -54,17 +54,17 @@
                     android:id="@+id/tab1_button_group"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="50dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginStart="35dp"
+                    android:layout_marginTop="50dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <ImageButton
-                        android:id="@+id/launch_application_button"
+                        android:id="@+id/profile_button"
                         android:layout_width="90dp"
                         android:layout_height="90dp"
-                        android:background="@color/colorPrimaryBackground"
-                        android:contentDescription="Start"
+                        android:background="@drawable/round_buttons"
+                        android:contentDescription="Profile"
                         android:tint="@color/white"
                         app:layout_constraintBottom_toTopOf="@+id/textView3"
                         app:layout_constraintEnd_toStartOf="parent"
@@ -80,12 +80,13 @@
                         android:fontFamily="@font/roboto_bold"
                         android:text="Profile"
                         android:textAlignment="center"
+                        android:textColor="@color/colorPrimaryBackground"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/launch_application_button"
+                        app:layout_constraintTop_toBottomOf="@+id/profile_button"
                         app:layout_constraintVertical_bias="1.0" />
                 </android.support.constraint.ConstraintLayout>
 
@@ -93,23 +94,23 @@
                     android:id="@+id/tab2_button_group"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="50dp"
+                    android:layout_marginEnd="16dp"
                     app:layout_constraintEnd_toStartOf="@+id/tab3_button_group"
-                    app:layout_constraintHorizontal_bias="0.692"
                     app:layout_constraintStart_toEndOf="@+id/tab1_button_group"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <ImageButton
-                        android:id="@+id/launch_friendlist_button"
+                        android:id="@+id/friendlist_button"
                         android:layout_width="90dp"
                         android:layout_height="90dp"
-                        android:background="@color/colorPrimaryBackground"
+                        android:background="@drawable/round_buttons"
                         android:contentDescription="Friendlist"
                         android:tint="@color/white"
                         app:layout_constraintBottom_toTopOf="@+id/textView4"
                         app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.46"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:srcCompat="@drawable/ic_main_friendlist_button_64dp" />
@@ -121,30 +122,31 @@
                         android:fontFamily="@font/roboto_bold"
                         android:text="Friendlist"
                         android:textAlignment="center"
+                        android:textColor="@color/colorPrimaryBackground"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/launch_friendlist_button" />
+                        app:layout_constraintTop_toBottomOf="@+id/friendlist_button" />
                 </android.support.constraint.ConstraintLayout>
 
                 <android.support.constraint.ConstraintLayout
                     android:id="@+id/tab3_button_group"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="50dp"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginTop="50dp"
+                    android:layout_marginEnd="35dp"
+                    android:layout_marginBottom="50dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <ImageButton
-                        android:id="@+id/launch_session_button"
+                        android:id="@+id/session_button"
                         android:layout_width="90dp"
                         android:layout_height="90dp"
-                        android:background="@color/colorPrimaryBackground"
+                        android:background="@drawable/round_buttons"
                         android:contentDescription="Session"
                         android:tint="@color/white"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -162,12 +164,13 @@
                         android:fontFamily="@font/roboto_bold"
                         android:text="Create session"
                         android:textAlignment="center"
+                        android:textColor="@color/colorPrimaryBackground"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/launch_session_button" />
+                        app:layout_constraintTop_toBottomOf="@+id/session_button" />
                 </android.support.constraint.ConstraintLayout>
 
             </android.support.constraint.ConstraintLayout>
@@ -185,7 +188,7 @@
                     android:layout_width="172dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="50dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="50dp"
                     android:layout_marginEnd="50dp"
                     android:background="@drawable/edit_text_background"
                     android:ems="10"
@@ -206,7 +209,7 @@
                     android:layout_width="111dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="30dp"
-                    android:layout_marginBottom="20dp"
+                    android:layout_marginBottom="50dp"
                     android:background="@drawable/round_buttons"
                     android:fontFamily="@font/roboto_bold"
                     android:text="JOIN"

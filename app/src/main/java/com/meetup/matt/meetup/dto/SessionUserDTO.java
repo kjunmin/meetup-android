@@ -1,17 +1,25 @@
 package com.meetup.matt.meetup.dto;
 
+import android.os.Parcel;
+
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.gson.annotations.SerializedName;
 
-public class SessionUserDTO {
+import java.io.Serializable;
+
+public class SessionUserDTO implements Serializable {
     @SerializedName("user") private UserDTO user;
     private Polyline polyline;
     private Marker marker;
     @SerializedName("distance") private String distance;
     @SerializedName("transport_mode") private String transportMode;
+    @SerializedName("user_location") private LatLng userLocation;
+
 
     public SessionUserDTO() {
+
 
     }
 
@@ -53,5 +61,13 @@ public class SessionUserDTO {
 
     public void setTransportMode(String transportMode) {
         this.transportMode = transportMode;
+    }
+
+    public LatLng getUserLocation() {
+        return userLocation;
+    }
+
+    public void setUserLocation(LatLng userLocation) {
+        this.userLocation = userLocation;
     }
 }

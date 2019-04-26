@@ -25,14 +25,29 @@ public final class MeetupSessionController {
         }
     }
 
+    public static SessionUserDTO[] getMeetupSessionUsersDetails(String response) {
+        Gson gson = new Gson();
+        try {
+            ResponseDTO res = gson.fromJson(response, ResponseDTO.class);
+            if (res.getStatus() == 1) {
+                SessionUserDTO[] sessionUserDetails = gson.fromJson(res.getData(), SessionUserDTO[].class);
+                return sessionUserDetails;
+            }
+            return null;
+        } catch (IllegalStateException | JsonSyntaxException exception) {
+            Log.d("RequestError", exception.toString());
+            return null;
+        }
+    }
+
 
     public static MeetupSessionDTO getMeetupSessionDetails(String response) {
         Gson gson = new Gson();
         try {
             ResponseDTO res = gson.fromJson(response, ResponseDTO.class);
-//            Log.d("Session", res.getData().toString());
             if (res.getStatus() == 1) {
                 MeetupSessionDTO meetupSessionDetails = gson.fromJson(res.getData(), MeetupSessionDTO.class);
+                Log.d("API", "users: " + meetupSessionDetails.getUsers());
                 return meetupSessionDetails;
             }
             return null;

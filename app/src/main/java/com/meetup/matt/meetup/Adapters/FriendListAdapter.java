@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.meetup.matt.meetup.Handlers.SocketHandler;
 import com.meetup.matt.meetup.R;
 import com.meetup.matt.meetup.dto.MeetupSessionDTO;
+import com.meetup.matt.meetup.dto.SessionUserDTO;
 import com.meetup.matt.meetup.dto.UserDTO;
 
 import java.util.ArrayList;
@@ -20,8 +21,8 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
 
     private boolean isHost;
     private MeetupSessionDTO sessionDetails;
-    private UserDTO host;
-    private ArrayList<UserDTO> mDataset;
+    private SessionUserDTO host;
+    private ArrayList<SessionUserDTO> mDataset;
 
     protected static class FriendListViewHolder extends RecyclerView.ViewHolder {
         TextView flItemUsernameView;
@@ -36,7 +37,7 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
         }
     }
 
-    public FriendListAdapter(ArrayList<UserDTO> dataset, MeetupSessionDTO sessionDetails, UserDTO hostUser, boolean isHost) {
+    public FriendListAdapter(ArrayList<SessionUserDTO> dataset, MeetupSessionDTO sessionDetails, SessionUserDTO hostUser, boolean isHost) {
         this.sessionDetails = sessionDetails;
         this.host = hostUser;
         this.mDataset = dataset;
@@ -64,7 +65,7 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
             flDeleteItemButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    SocketHandler.getSocket().emit(SocketHandler.Event.Server.ON_USER_KICKED, mDataset.get(position).getUserId(), sessionDetails.getSessionId());
+                    SocketHandler.getSocket().emit(SocketHandler.Event.Server.ON_USER_KICKED, mDataset.get(position).getUser().getUserId(), sessionDetails.getSessionId());
                     mDataset.remove(position);
                     notifyDataSetChanged();
                 }
@@ -72,7 +73,7 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
         }
 
 
-        flItemUsernameView.setText(mDataset.get(position).getFirstName());
+        flItemUsernameView.setText(mDataset.get(position).getUser().getFirstName());
         flItemAvatarView.setImageResource(R.drawable.ic_placeholder_avatar_24dp);
 
     }

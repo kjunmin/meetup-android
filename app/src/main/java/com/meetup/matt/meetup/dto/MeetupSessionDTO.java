@@ -6,49 +6,20 @@ import android.os.Parcelable;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class MeetupSessionDTO implements Parcelable {
+public class MeetupSessionDTO implements Serializable {
     @SerializedName("id") private String sessionId;
     @SerializedName("session_code") private String sessionCode;
-    @SerializedName("host") private UserDTO host;
-    @SerializedName("users") private UserDTO[] users;
+    @SerializedName("host") private SessionUserDTO host;
+    @SerializedName("users") private SessionUserDTO[] users;
     @SerializedName("destination_location") private LatLng destinationLocation;
     private String destinationAddress;
     private LocalDateTime createdTimestamp;
-
-    public MeetupSessionDTO(Parcel in) {
-        //Order same as parcel dest
-        this.sessionId = in.readString();
-        this.sessionCode = in.readString();
-        this.destinationAddress = in.readString();
-        this.host = (UserDTO)in.readTypedObject(UserDTO.CREATOR);
-        this.users = (UserDTO[])in.createTypedArray(UserDTO.CREATOR);
-    }
-
-    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
-        public MeetupSessionDTO createFromParcel(Parcel in) {
-            return new MeetupSessionDTO(in);
-        }
-        public MeetupSessionDTO[] newArray(int size) {
-            return new MeetupSessionDTO[size];
-        }
-    };
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        //Order same as parcel in
-        dest.writeString(this.sessionId);
-        dest.writeString(this.sessionCode);
-        dest.writeString(this.destinationAddress);
-        dest.writeTypedObject(host, 0);
-        dest.writeTypedArray(users, 0);
-    }
 
     public MeetupSessionDTO() {};
 
@@ -68,12 +39,20 @@ public class MeetupSessionDTO implements Parcelable {
         this.sessionCode = sessionCode;
     }
 
-    public UserDTO getHost() {
+    public SessionUserDTO getHost() {
         return host;
     }
 
-    public void setHost(UserDTO host) {
+    public void setHost(SessionUserDTO host) {
         this.host = host;
+    }
+
+    public SessionUserDTO[] getUsers() {
+        return users;
+    }
+
+    public void setUsers(SessionUserDTO[] users) {
+        this.users = users;
     }
 
     public LatLng getDestinationLocation() {
@@ -100,12 +79,5 @@ public class MeetupSessionDTO implements Parcelable {
         this.createdTimestamp = createdTimestamp;
     }
 
-    public UserDTO[] getUsers() {
-        return users;
-    }
-
-    public void setUsers(UserDTO[] users) {
-        this.users = users;
-    }
 
 }
