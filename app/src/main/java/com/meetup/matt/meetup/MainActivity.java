@@ -1,15 +1,11 @@
 package com.meetup.matt.meetup;
 
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
 import android.text.InputFilter;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -36,12 +32,12 @@ public class MainActivity extends AppCompatActivity {
         mRoomCodeInputField = findViewById(R.id.session_code_input_field);
         mWelcomeTextView = findViewById(R.id.welcome_text);
 
-        UserDTO userDetails = getIntent().getParcelableExtra("userDetails");
+        UserDTO userDetails = (UserDTO)getIntent().getSerializableExtra("userDetails");
         LocalStorageHandler.storeSessionUser(getApplicationContext(), Config.SESSION_FILE_NAME, userDetails);
 
         mWelcomeTextView.setText(String.format("Welcome %s!", userDetails.getFirstName()));
 
-        ImageButton startApplicationButton = findViewById(R.id.launch_application_button);
+        ImageButton startApplicationButton = findViewById(R.id.profile_button);
         startApplicationButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -51,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        ImageButton launchFriendlistButton = findViewById(R.id.launch_friendlist_button);
+        ImageButton launchFriendlistButton = findViewById(R.id.friendlist_button);
         launchFriendlistButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -60,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        ImageButton startSessionButton = findViewById(R.id.launch_session_button);
+        ImageButton startSessionButton = findViewById(R.id.session_button);
         startSessionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,8 +81,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onMeetupSessionRequestResponse(MeetupSessionDTO meetupSessionDetails) {
                 if (meetupSessionDetails != null) {
+                    LocalStorageHandler.storeSessionDetails(getApplicationContext(), Config.SESSION_FILE_NAME, meetupSessionDetails);
                     Intent intent = new Intent(MainActivity.this, MeetupSessionRoomActivity.class);
-                    intent.putExtra("sessionDetails", meetupSessionDetails);
+                    intent.putExtra("isExternalUser", true);
                     ActivityTransitionHelper.displayActivity(intent, false, getApplicationContext());
                 } else {
                     Toast.makeText(getApplicationContext(), "Invalid Room Code", Toast.LENGTH_SHORT).show();

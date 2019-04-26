@@ -23,6 +23,7 @@ import com.meetup.matt.meetup.Utils.SessionUtil;
 import com.meetup.matt.meetup.WebApi.SessionApi;
 import com.meetup.matt.meetup.config.Config;
 import com.meetup.matt.meetup.dto.MeetupSessionDTO;
+import com.meetup.matt.meetup.dto.SessionUserDTO;
 import com.meetup.matt.meetup.dto.UserDTO;
 
 import java.util.ArrayList;
@@ -52,15 +53,17 @@ public class MeetupSessionRoomActivity extends AppCompatActivity {
 
         userDetails = LocalStorageHandler.getSessionUser(getApplicationContext(), Config.SESSION_FILE_NAME);
 
+        Boolean isExternalUser = getIntent().getBooleanExtra("isExternalUser", false);
         socket = SocketHandler.createSocketConnection();
         startSocketListener(socket);
 
-        sessionDetails = getIntent().getParcelableExtra("sessionDetails");
-        if (sessionDetails != null) {
-           initializeFriendSession(sessionDetails);
-        } else {
+
+        if (!isExternalUser) {
             mLaunchMapsButton.setVisibility(View.VISIBLE);
             initializeHostSession();
+        } else {
+            sessionDetails = LocalStorageHandler.getSessionDetails(getApplicationContext(), Config.SESSION_FILE_NAME);
+            initializeFriendSession(sessionDetails);
         }
     }
 
@@ -81,7 +84,7 @@ public class MeetupSessionRoomActivity extends AppCompatActivity {
         mRoomCodeView.setText(meetupSessionDetails.getSessionCode());
         final UserDTO userDetails = LocalStorageHandler.getSessionUser(getApplicationContext(), Config.SESSION_FILE_NAME);
 
-        SessionApi.handleAddUserToMeetupSession(userDetails.getEmail(), meetupSessionDetails.getSessionId(), meetupSessionDetails.getHost().getUserId(), getApplicationContext(), new GetMeetupSessionListener() {
+        SessionApi.handleAddUserToMeetupSession(userDetails.getEmail(), meetupSessionDetails.getSessionId(), meetupSessionDetails.getHost().getUser().getUserId(), getApplicationContext(), new GetMeetupSessionListener() {
             @Override
             public void onMeetupSessionRequestResponse(MeetupSessionDTO meetupSessionDetails) {
                 emitSocketOnJoinEvent(socket, userDetails, meetupSessionDetails);
@@ -92,8 +95,10 @@ public class MeetupSessionRoomActivity extends AppCompatActivity {
 
     private void initializeHostSession() {
         final UserDTO hostDetails = LocalStorageHandler.getSessionUser(getApplicationContext(), Config.SESSION_FILE_NAME);
+        SessionUserDTO hostSessionUser = new SessionUserDTO();
+        hostSessionUser.setUser(hostDetails);
         MeetupSessionDTO meetupSessionDTO = new MeetupSessionDTO();
-        meetupSessionDTO.setHost(hostDetails);
+        meetupSessionDTO.setHost(hostSessionUser);
         SessionApi.handleCreateMeetupSession(meetupSessionDTO, getApplicationContext(), new CreateMeetupSessionListener() {
             @Override
             public void onMeetupSessionCreateResponse(final MeetupSessionDTO meetupSessionDetails) {
@@ -115,15 +120,8 @@ public class MeetupSessionRoomActivity extends AppCompatActivity {
         socket.on(SocketHandler.Event.Client.ON_USER_JOIN, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                String sessionId = (String) args[0];
-                SessionApi.handleGetMeetupSessionBySessionId(sessionId, getApplicationContext(), new GetMeetupSessionListener() {
-                    @Override
-                    public void onMeetupSessionRequestResponse(MeetupSessionDTO meetupSessionDetails) {
-                        ArrayList<UserDTO> userList = new ArrayList<>(Arrays.asList(meetupSessionDetails.getUsers()));
-                        mAdapter = new FriendListAdapter(userList, meetupSessionDetails, meetupSessionDetails.getHost(), SessionUtil.isHost(userDetails, meetupSessionDetails));
-                        mSessionUserListView.setAdapter(mAdapter);
-                    }
-                });
+                final String sessionId = (String) args[0];
+                loadSessionUserList(sessionId);
             }
         });
 
@@ -141,8 +139,8 @@ public class MeetupSessionRoomActivity extends AppCompatActivity {
                 SessionApi.handleGetMeetupSessionBySessionId(sessionId, getApplicationContext(), new GetMeetupSessionListener() {
                     @Override
                     public void onMeetupSessionRequestResponse(MeetupSessionDTO meetupSessionDetails) {
+                        LocalStorageHandler.storeSessionDetails(getApplicationContext(), Config.SESSION_FILE_NAME, meetupSessionDetails);
                         Intent intent = new Intent(MeetupSessionRoomActivity.this, MapsActivity.class);
-                        intent.putExtra("sessiondetails", meetupSessionDetails);
                         ActivityTransitionHelper.displayActivity(intent, false, getApplicationContext());
                     }
                 });
@@ -153,7 +151,7 @@ public class MeetupSessionRoomActivity extends AppCompatActivity {
             @Override
             public void call(Object... args) {
                 String userId = (String) args[0];
-                if (userId.equals(userDetails.getUserId())) {
+                if (userId.equals(userDetails.getUserId()) || userId.equals(sessionDetails.getHost().getUser().getUserId())) {
                     finish();
                 }
             }
@@ -170,11 +168,10 @@ public class MeetupSessionRoomActivity extends AppCompatActivity {
 
     private void loadSessionUserList(String sessionId) {
 
-
         SessionApi.handleGetMeetupSessionBySessionId(sessionId, getApplicationContext(), new GetMeetupSessionListener() {
             @Override
             public void onMeetupSessionRequestResponse(MeetupSessionDTO meetupSessionDetails) {
-                ArrayList<UserDTO> userList = new ArrayList<>(Arrays.asList(meetupSessionDetails.getUsers()));
+                ArrayList<SessionUserDTO> userList = new ArrayList<>(Arrays.asList(meetupSessionDetails.getUsers()));
                 mAdapter = new FriendListAdapter(userList, meetupSessionDetails, meetupSessionDetails.getHost(), SessionUtil.isHost(userDetails, meetupSessionDetails));
                 mSessionUserListView.setAdapter(mAdapter);
             }

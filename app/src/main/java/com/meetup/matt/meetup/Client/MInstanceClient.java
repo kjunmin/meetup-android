@@ -12,21 +12,16 @@ import com.github.nkzawa.socketio.client.Socket;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
 import com.google.gson.Gson;
-import com.google.maps.android.PolyUtil;
 import com.meetup.matt.meetup.Adapters.RouteInfoAdapter;
 import com.meetup.matt.meetup.Handlers.InstanceHandler;
 import com.meetup.matt.meetup.Handlers.LocalStorageHandler;
-import com.meetup.matt.meetup.Handlers.RouteHandler;
 import com.meetup.matt.meetup.Handlers.SocketHandler;
 import com.meetup.matt.meetup.Helpers.GeocodeHelper;
-import com.meetup.matt.meetup.Listeners.ApiResponseListener;
 import com.meetup.matt.meetup.Listeners.GetMeetupSessionListener;
+import com.meetup.matt.meetup.Listeners.GetSessionUsersListener;
 import com.meetup.matt.meetup.R;
 import com.meetup.matt.meetup.Utils.SessionUtil;
-import com.meetup.matt.meetup.WebApi.RouteApi;
 import com.meetup.matt.meetup.WebApi.SessionApi;
 import com.meetup.matt.meetup.config.Config;
 import com.meetup.matt.meetup.dto.MeetupSessionDTO;
@@ -34,8 +29,9 @@ import com.meetup.matt.meetup.dto.RouteDTO;
 import com.meetup.matt.meetup.dto.SessionUserDTO;
 import com.meetup.matt.meetup.dto.UserDTO;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 public class MInstanceClient {
 
@@ -49,7 +45,7 @@ public class MInstanceClient {
     Socket socket;
     private boolean isDestinationSet;
     private InstanceHandler instanceHandler;
-    private ArrayList<SessionUserDTO> sessionUsers;
+    private ArrayList<SessionUserDTO> globalSessionUsers;
     private RecyclerView mRouteInfoRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
@@ -65,7 +61,7 @@ public class MInstanceClient {
         this.isDestinationSet = false;
         userDetails = LocalStorageHandler.getSessionUser(context, Config.SESSION_FILE_NAME);
         this.instanceHandler = new InstanceHandler(context, map);
-        sessionUsers = new ArrayList<>();
+        this.globalSessionUsers = new ArrayList<>();
 
         startService();
     }
@@ -89,13 +85,10 @@ public class MInstanceClient {
             @Override
             public void onMeetupSessionRequestResponse(MeetupSessionDTO meetupSessionDetails) {
                 sessionDetails = meetupSessionDetails;
-                UserDTO[] users = meetupSessionDetails.getUsers();
-                for (UserDTO user : users) {
-                    SessionUserDTO sessionUser = new SessionUserDTO();
-                    sessionUser.setUser(user);
-                    sessionUsers.add(sessionUser);
-                }
-                loadRouteInfoListView(sessionUsers);
+                SessionUserDTO[] users = meetupSessionDetails.getUsers();
+                ArrayList<SessionUserDTO> sessionUserList = new ArrayList<>(Arrays.asList(users));
+                globalSessionUsers = sessionUserList;
+                loadRouteInfoListView(sessionUserList);
             }
         });
 
@@ -138,18 +131,14 @@ public class MInstanceClient {
 
 
     public void onLocationChanged(LatLng userLocation) {
-        socket.emit(SocketHandler.Event.Server.ON_USER_LOCATION_CHANGE, userDetails.getUserId(), userLocation.latitude, userLocation.longitude);
+        socket.emit(SocketHandler.Event.Server.ON_USER_LOCATION_CHANGE, sessionDetails.getSessionId(), userDetails.getUserId(), userLocation.latitude, userLocation.longitude);
 
         if (isDestinationSet && sessionDetails != null) {
-            SessionApi.handleGetMeetupSessionBySessionId(sessionDetails.getSessionId(), context, new GetMeetupSessionListener() {
+            SessionApi.handleGetMeetupSessionUsers(sessionDetails.getSessionId(), context, new GetSessionUsersListener() {
                 @Override
-                public void onMeetupSessionRequestResponse(MeetupSessionDTO meetupSessionDetails) {
-                    try {
-                        sessionUsers = instanceHandler.updateSessionUsers(meetupSessionDetails.getUsers(), sessionUsers);
-                        updateMapObjects(sessionUsers);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                public void onSessionUsersRequestResponse(SessionUserDTO[] sessionUsers) {
+                    globalSessionUsers = instanceHandler.updateSessionUsers(sessionUsers, globalSessionUsers);
+                    updateMapObjects(globalSessionUsers);
                 }
             });
 
@@ -158,13 +147,13 @@ public class MInstanceClient {
 
     private void updateMapObjects(ArrayList<SessionUserDTO> sessionUsers) {
         for (int i = 0; i < sessionUsers.size(); i++) {
-            updateUser(sessionUsers.get(i), i);
+            updateUserMapObjects(sessionUsers.get(i), i);
         }
     }
 
 
-    private void updateUser(final SessionUserDTO sessionUser, final int userIndex) {
-        RouteDTO route = new RouteDTO.Builder(context).setOrigin(sessionUser.getUser().getUserLocation()).setDestination(sessionDetails.getDestinationLocation()).build();
+    private void updateUserMapObjects(final SessionUserDTO sessionUser, final int userIndex) {
+        RouteDTO route = new RouteDTO.Builder(context).setOrigin(sessionUser.getUserLocation()).setDestination(sessionDetails.getDestinationLocation()).build();
         if (!isDeviceUser(sessionUser.getUser())) {
             instanceHandler.setMarker(route, sessionUser, userIndex);
         }
