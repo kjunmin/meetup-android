@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 
 import com.github.nkzawa.emitter.Emitter;
@@ -18,8 +17,7 @@ import com.meetup.matt.meetup.Handlers.InstanceHandler;
 import com.meetup.matt.meetup.Handlers.LocalStorageHandler;
 import com.meetup.matt.meetup.Handlers.SocketHandler;
 import com.meetup.matt.meetup.Helpers.GeocodeHelper;
-import com.meetup.matt.meetup.Listeners.GetMeetupSessionListener;
-import com.meetup.matt.meetup.Listeners.GetSessionUsersListener;
+import com.meetup.matt.meetup.Listeners.SessionListeners;
 import com.meetup.matt.meetup.R;
 import com.meetup.matt.meetup.Utils.SessionUtil;
 import com.meetup.matt.meetup.WebApi.SessionApi;
@@ -29,9 +27,10 @@ import com.meetup.matt.meetup.dto.RouteDTO;
 import com.meetup.matt.meetup.dto.SessionUserDTO;
 import com.meetup.matt.meetup.dto.UserDTO;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Set;
 
 public class MInstanceClient {
 
@@ -42,13 +41,10 @@ public class MInstanceClient {
     private View view;
     private Context context;
     private GeocodeHelper geocodeHelper;
-    Socket socket;
+    private Socket socket;
     private boolean isDestinationSet;
     private InstanceHandler instanceHandler;
-    private ArrayList<SessionUserDTO> globalSessionUsers;
-    private RecyclerView mRouteInfoRecyclerView;
-    private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager layoutManager;
+    private LinkedHashMap<String, SessionUserDTO> sessionUserMap;
 
     public MInstanceClient(GoogleMap map, Context context, View view, MeetupSessionDTO sessionDetails) {
         this.map = map;
@@ -61,33 +57,33 @@ public class MInstanceClient {
         this.isDestinationSet = false;
         userDetails = LocalStorageHandler.getSessionUser(context, Config.SESSION_FILE_NAME);
         this.instanceHandler = new InstanceHandler(context, map);
-        this.globalSessionUsers = new ArrayList<>();
+        this.sessionUserMap = new LinkedHashMap<>();
 
         startService();
     }
 
     private void loadRouteInfoListView(ArrayList<SessionUserDTO> sessionUsers) {
-        mRouteInfoRecyclerView = view.findViewById(R.id.routeinfo_recycler_view);
+        RecyclerView mRouteInfoRecyclerView = view.findViewById(R.id.routeinfo_recycler_view);
         mRouteInfoRecyclerView.setHasFixedSize(false);
-        layoutManager = new LinearLayoutManager(context);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
         mRouteInfoRecyclerView.setLayoutManager(layoutManager);
-        mAdapter = new RouteInfoAdapter(sessionUsers);
+        RecyclerView.Adapter mAdapter = new RouteInfoAdapter(sessionUsers);
         mRouteInfoRecyclerView.setAdapter(mAdapter);
     }
 
 
-    public void startService() {
+    private void startService() {
         startSocketListener(socket);
         if (SessionUtil.isHost(userDetails, sessionDetails)) {
             enableMapActions();
         }
-        SessionApi.handleGetMeetupSessionBySessionId(sessionDetails.getSessionId(), context, new GetMeetupSessionListener() {
+        SessionApi.handleGetMeetupSessionBySessionId(sessionDetails.getSessionId(), context, new SessionListeners.GetMeetupSessionListener() {
             @Override
             public void onMeetupSessionRequestResponse(MeetupSessionDTO meetupSessionDetails) {
                 sessionDetails = meetupSessionDetails;
                 SessionUserDTO[] users = meetupSessionDetails.getUsers();
                 ArrayList<SessionUserDTO> sessionUserList = new ArrayList<>(Arrays.asList(users));
-                globalSessionUsers = sessionUserList;
+                sessionUserMap = instanceHandler.updateSessionUsers(users, null);
                 loadRouteInfoListView(sessionUserList);
             }
         });
@@ -118,7 +114,7 @@ public class MInstanceClient {
         emitSocketOnDestinationSetEvent(socket, sessionDetails);
     }
 
-    public void displayLocationUI(final String addressValue, final LatLng latLng) {
+    private void displayLocationUI(final String addressValue, final LatLng latLng) {
         Snackbar.make(view, addressValue, Snackbar.LENGTH_LONG)
                 .setAction("Add Destination", new View.OnClickListener() {
 
@@ -134,20 +130,23 @@ public class MInstanceClient {
         socket.emit(SocketHandler.Event.Server.ON_USER_LOCATION_CHANGE, sessionDetails.getSessionId(), userDetails.getUserId(), userLocation.latitude, userLocation.longitude);
 
         if (isDestinationSet && sessionDetails != null) {
-            SessionApi.handleGetMeetupSessionUsers(sessionDetails.getSessionId(), context, new GetSessionUsersListener() {
+            SessionApi.handleGetMeetupSessionUsers(sessionDetails.getSessionId(), context, new SessionListeners.GetSessionUsersListener() {
                 @Override
                 public void onSessionUsersRequestResponse(SessionUserDTO[] sessionUsers) {
-                    globalSessionUsers = instanceHandler.updateSessionUsers(sessionUsers, globalSessionUsers);
-                    updateMapObjects(globalSessionUsers);
+                    sessionUserMap = instanceHandler.updateSessionUsers(sessionUsers, sessionUserMap);
+                    updateMapObjects(sessionUserMap);
                 }
             });
 
         }
     }
 
-    private void updateMapObjects(ArrayList<SessionUserDTO> sessionUsers) {
-        for (int i = 0; i < sessionUsers.size(); i++) {
-            updateUserMapObjects(sessionUsers.get(i), i);
+    private void updateMapObjects(LinkedHashMap<String, SessionUserDTO> sessionUsersMap) {
+        Set<String> keys = sessionUsersMap.keySet();
+        int index = 0;
+        for (String key : keys) {
+            updateUserMapObjects(sessionUsersMap.get(key), index);
+            index++;
         }
     }
 
@@ -173,7 +172,7 @@ public class MInstanceClient {
             @Override
             public void call(Object... args) {
                 String sessionId = (String) args[0];
-                SessionApi.handleGetMeetupSessionBySessionId(sessionId, context, new GetMeetupSessionListener() {
+                SessionApi.handleGetMeetupSessionBySessionId(sessionId, context, new SessionListeners.GetMeetupSessionListener() {
                     @Override
                     public void onMeetupSessionRequestResponse(MeetupSessionDTO meetupSessionDetails) {
                         sessionDetails = meetupSessionDetails;

@@ -1,7 +1,6 @@
 package com.meetup.matt.meetup.Handlers;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
@@ -17,9 +16,8 @@ import com.meetup.matt.meetup.WebApi.RouteApi;
 import com.meetup.matt.meetup.dto.MeetupSessionDTO;
 import com.meetup.matt.meetup.dto.RouteDTO;
 import com.meetup.matt.meetup.dto.SessionUserDTO;
-import com.meetup.matt.meetup.dto.UserDTO;
 
-import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public class InstanceHandler {
@@ -88,7 +86,7 @@ public class InstanceHandler {
 
 
     }
-    public Polyline plotPolyline(String apiRes, int colorVal) {
+    private Polyline plotPolyline(String apiRes, int colorVal) {
         Polyline polyline = null;
         try {
             String polyString = RouteHandler.getPolyline(apiRes);
@@ -112,14 +110,21 @@ public class InstanceHandler {
         return  marker;
     }
 
-    public ArrayList<SessionUserDTO> updateSessionUsers(SessionUserDTO[] users, ArrayList<SessionUserDTO> sessionUsers) {
-        for (SessionUserDTO user : users) {
-            for (SessionUserDTO sessionUser : sessionUsers)
-                if (user.getUser().getUserId().equals(sessionUser.getUser().getUserId())) {
-                    sessionUser.setUserLocation(user.getUserLocation());
-                }
+    public LinkedHashMap<String, SessionUserDTO> updateSessionUsers(SessionUserDTO[] sessionUsers, LinkedHashMap<String, SessionUserDTO> sessionUsersMap) {
+
+        if (sessionUsersMap == null) {
+            sessionUsersMap = new LinkedHashMap<>();
+            for (SessionUserDTO user : sessionUsers) {
+                String key = user.getUser().getUserId();
+                sessionUsersMap.put(key, user);
+            }
+        } else {
+            for (SessionUserDTO user : sessionUsers) {
+                String key = user.getUser().getUserId();
+                sessionUsersMap.get(key).setUserLocation(user.getUserLocation());
+            }
         }
-        return sessionUsers;
+        return sessionUsersMap;
     }
 
 

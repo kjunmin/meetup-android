@@ -8,9 +8,8 @@ import com.android.volley.toolbox.Volley;
 
 public class ApiRequestHandler {
 
-    private static ApiRequestHandler instance;
     private RequestQueue requestQueue;
-    private static Context context;
+    private Context context;
 
     private ApiRequestHandler(Context context) {
         this.context = context;
@@ -18,13 +17,10 @@ public class ApiRequestHandler {
     }
 
     public static synchronized ApiRequestHandler getInstance(Context context) {
-        if (instance == null) {
-            instance = new ApiRequestHandler(context);
-        }
-        return instance;
+        return new ApiRequestHandler(context);
     }
 
-    public RequestQueue getRequestQueue() {
+    private RequestQueue getRequestQueue() {
         if (requestQueue == null) {
             requestQueue = Volley.newRequestQueue(context.getApplicationContext());
         }

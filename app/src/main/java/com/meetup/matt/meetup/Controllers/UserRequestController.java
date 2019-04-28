@@ -9,7 +9,6 @@ import com.meetup.matt.meetup.dto.UserDTO;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public final class UserRequestController {
     public static UserDTO getUserDetails(String response) {

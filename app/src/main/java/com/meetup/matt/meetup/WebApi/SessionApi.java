@@ -9,10 +9,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.meetup.matt.meetup.Controllers.MeetupSessionController;
 import com.meetup.matt.meetup.Handlers.ApiRequestHandler;
-import com.meetup.matt.meetup.Listeners.CreateMeetupSessionListener;
-import com.meetup.matt.meetup.Listeners.GetMeetupSessionListener;
-import com.meetup.matt.meetup.Listeners.GetSessionUserListener;
-import com.meetup.matt.meetup.Listeners.GetSessionUsersListener;
+import com.meetup.matt.meetup.Listeners.SessionListeners;
 import com.meetup.matt.meetup.config.Config;
 import com.meetup.matt.meetup.dto.MeetupSessionDTO;
 
@@ -47,7 +44,7 @@ public class SessionApi {
         return getSessionUsersObj;
     }
 
-    public static void handleCreateMeetupSession(MeetupSessionDTO meetupSessionDTO, Context context, final CreateMeetupSessionListener callback) {
+    public static void handleCreateMeetupSession(MeetupSessionDTO meetupSessionDTO, Context context, final SessionListeners.CreateMeetupSessionListener callback) {
         String url = Config.CREATE_MEETUP_SESSION_URL;
 
         final Map createSessionObj = buildSessionRequestObject(meetupSessionDTO);
@@ -71,7 +68,7 @@ public class SessionApi {
         ApiRequestHandler.getInstance(context).addToRequestQueue(req);
     }
 
-    public static void handleGetMeetupSessionBySessionCode(String sessionCode, Context context, final GetMeetupSessionListener callback) {
+    public static void handleGetMeetupSessionBySessionCode(String sessionCode, Context context, final SessionListeners.GetMeetupSessionListener callback) {
         String url = Config.GET_MEETUP_SESSION_BY_SESSCODE_URL + sessionCode;
 
 
@@ -89,7 +86,7 @@ public class SessionApi {
         ApiRequestHandler.getInstance(context).addToRequestQueue(req);
     }
 
-    public static void handleAddUserToMeetupSession(String friendEmail, String sessionId, String hostId, Context context, final GetMeetupSessionListener callback) {
+    public static void handleAddUserToMeetupSession(String friendEmail, String sessionId, String hostId, Context context, final SessionListeners.GetMeetupSessionListener callback) {
         String url = Config.ADD_USER_TO_MEETUP_SESSION_URL;
 
         final Map addUserObject = buildAddUserRequestObject(friendEmail, sessionId, hostId);
@@ -113,7 +110,7 @@ public class SessionApi {
         ApiRequestHandler.getInstance(context).addToRequestQueue(req);
     }
 
-    public static void handleGetMeetupSessionBySessionId(String sessionId, Context context, final GetMeetupSessionListener callback) {
+    public static void handleGetMeetupSessionBySessionId(String sessionId, Context context, final SessionListeners.GetMeetupSessionListener callback) {
         String url = Config.GET_MEETUP_SESSION_BY_SESSID_URL + sessionId;
 
         StringRequest req = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
@@ -130,7 +127,7 @@ public class SessionApi {
         ApiRequestHandler.getInstance(context).addToRequestQueue(req);
     }
 
-    public static void handleGetMeetupSessionUser(String userId, String sessionId, Context context, final GetSessionUserListener callback) {
+    public static void handleGetMeetupSessionUser(String userId, String sessionId, Context context, final SessionListeners.GetSessionUserListener callback) {
         String url = Config.GET_MEETUP_SESSION_USER;
 
         final Map getSessionUserObj = buildGetSessionUserObject(userId, sessionId);
@@ -154,7 +151,7 @@ public class SessionApi {
         ApiRequestHandler.getInstance(context).addToRequestQueue(req);
     }
 
-    public static void handleGetMeetupSessionUsers(String sessionId, Context context, final GetSessionUsersListener callback) {
+    public static void handleGetMeetupSessionUsers(String sessionId, Context context, final SessionListeners.GetSessionUsersListener callback) {
         String url = Config.GET_MEETUP_SESSION_USERS;
 
         final Map getSessionUsersObj = buildGetSessionUsersObject(sessionId);
