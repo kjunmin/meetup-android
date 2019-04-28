@@ -1,13 +1,11 @@
 package com.meetup.matt.meetup.config;
 
-import com.meetup.matt.meetup.BuildConfig;
-
 public class Config {
 
     //Environment settings
-    public static final String ENV_PROD = "release";
-    public static final String ENV_DEV = "debug";
-    public static final String ENV = ENV_DEV;
+    private static final String ENV_PROD = "release";
+    private static final String ENV_DEV = "debug";
+    private static final String ENV = ENV_DEV;
 
     //Local Storage Settings
     public static final String PREF_FILE_NAME = "Preferences";
@@ -24,7 +22,7 @@ public class Config {
     public static final String GOOGLE_DISTANCE_MATRIX_API_URL = "https://maps.googleapis.com/maps/api/distancematrix";
 
     //Endpoint Settings
-    public static final String PROD_URI = "http://meetupendpoint-env.g6hzsmdx3t.ap-southeast-1.elasticbeanstalk.com";
+    private static final String PROD_URI = "http://meetupendpoint-env.g6hzsmdx3t.ap-southeast-1.elasticbeanstalk.com";
     public static final String DEV_URI = "http://10.0.2.2";
     public static final String DEV_PORT = "5000";
     public static final String ENDPOINT_URI = ENV.equals(ENV_PROD) ? PROD_URI : DEV_URI + ":" + DEV_PORT;
@@ -33,8 +31,6 @@ public class Config {
     public static final String REGISTER_URL = ENDPOINT_URI+"/api/user/register";
     public static final String LOGIN_URL = ENDPOINT_URI+"/api/user/login";
     public static final String GET_USER_BY_UUID_URL = ENDPOINT_URI+"api/getUserByUuid/";
-    public static final String ROUTE_INFO_URL = ENDPOINT_URI+"/api/route/";
-    public static final String ROUTE_UPSERT_URL = ENDPOINT_URI+"/api/route/upsert";
     public static final String ADD_USER_URL = ENDPOINT_URI+"/api/friend/addFriend";
     public static final String GET_FRIENDS_URL = ENDPOINT_URI+"/api/friend/getFriends/";
     public static final String CREATE_MEETUP_SESSION_URL = ENDPOINT_URI+"/api/session/create";

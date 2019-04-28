@@ -1,14 +1,8 @@
 package com.meetup.matt.meetup.dto;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.SerializedName;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -21,7 +15,7 @@ public class MeetupSessionDTO implements Serializable {
     private String destinationAddress;
     private LocalDateTime createdTimestamp;
 
-    public MeetupSessionDTO() {};
+    public MeetupSessionDTO() {}
 
     public String getSessionId() {
         return sessionId;

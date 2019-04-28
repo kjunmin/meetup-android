@@ -2,11 +2,9 @@ package com.meetup.matt.meetup.Handlers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 
 import com.google.gson.Gson;
 import com.meetup.matt.meetup.dto.MeetupSessionDTO;
-import com.meetup.matt.meetup.dto.SessionUserDTO;
 import com.meetup.matt.meetup.dto.UserDTO;
 
 public final class LocalStorageHandler {
@@ -17,7 +15,7 @@ public final class LocalStorageHandler {
         Gson gson = new Gson();
         String json = gson.toJson(sessionDetails);
         editor.putString("session_details", json);
-        editor.commit();
+        editor.apply();
     }
 
     public static MeetupSessionDTO getSessionDetails(Context context, String storageName) {
@@ -34,7 +32,7 @@ public final class LocalStorageHandler {
         Gson gson = new Gson();
         String json = gson.toJson(user);
         editor.putString("user_details", json);
-        editor.commit();
+        editor.apply();
     }
 
     public static UserDTO getSessionUser(Context context, String storageName) {

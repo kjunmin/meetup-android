@@ -5,5 +5,5 @@ import com.meetup.matt.meetup.dto.UserDTO;
 import java.util.ArrayList;
 
 public interface GetFriendListListener {
-    public void onDataReceived(ArrayList<UserDTO> fList);
+    void onDataReceived(ArrayList<UserDTO> fList);
 }

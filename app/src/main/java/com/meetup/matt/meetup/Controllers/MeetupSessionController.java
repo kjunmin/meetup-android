@@ -47,7 +47,6 @@ public final class MeetupSessionController {
             ResponseDTO res = gson.fromJson(response, ResponseDTO.class);
             if (res.getStatus() == 1) {
                 MeetupSessionDTO meetupSessionDetails = gson.fromJson(res.getData(), MeetupSessionDTO.class);
-                Log.d("API", "users: " + meetupSessionDetails.getUsers());
                 return meetupSessionDetails;
             }
             return null;
