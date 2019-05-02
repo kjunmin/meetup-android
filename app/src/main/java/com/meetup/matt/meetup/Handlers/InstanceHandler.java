@@ -122,6 +122,7 @@ public class InstanceHandler {
             for (SessionUserDTO user : sessionUsers) {
                 String key = user.getUser().getUserId();
                 sessionUsersMap.get(key).setUserLocation(user.getUserLocation());
+                sessionUsersMap.get(key).setDistance(user.getDistance());
             }
         }
         return sessionUsersMap;

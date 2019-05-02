@@ -3,6 +3,7 @@ package com.meetup.matt.meetup.Adapters;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,8 @@ import com.meetup.matt.meetup.R;
 import com.meetup.matt.meetup.Utils.SessionUtil;
 import com.meetup.matt.meetup.dto.SessionUserDTO;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 public class RouteInfoAdapter extends RecyclerView.Adapter<RouteInfoAdapter.RouteInfoViewHolder> {
@@ -21,11 +24,13 @@ public class RouteInfoAdapter extends RecyclerView.Adapter<RouteInfoAdapter.Rout
 
     protected static class RouteInfoViewHolder extends RecyclerView.ViewHolder {
         TextView riItemUsernameView;
+        TextView riItemDistanceView;
         ImageButton riToggleDisplayButton;
 
         private RouteInfoViewHolder(View v) {
             super(v);
             this.riItemUsernameView = v.findViewById(R.id.routeinfo_username);
+            this.riItemDistanceView = v.findViewById(R.id.routeinfo_distance);
             this.riToggleDisplayButton = v.findViewById(R.id.routeinfo_toggle_display);
         }
     }
@@ -47,9 +52,11 @@ public class RouteInfoAdapter extends RecyclerView.Adapter<RouteInfoAdapter.Rout
     @Override
     public void onBindViewHolder(@NonNull RouteInfoAdapter.RouteInfoViewHolder holder, final int position) {
         TextView riItemUsernameView = holder.riItemUsernameView;
+        TextView riItemDistanceView = holder.riItemDistanceView;
         final ImageButton riItemToggleDisplayButton = holder.riToggleDisplayButton;
 
         riItemUsernameView.setText(mDataset.get(position).getUser().getFirstName());
+        riItemDistanceView.setText(mDataset.get(position).getDistance());
         final int colorVal = SessionUtil.getColourByIndex(position);
         riItemToggleDisplayButton.setImageResource(R.drawable.ic_routeinfo_location_48dp);
         riItemToggleDisplayButton.setBackgroundColor(Color.WHITE);

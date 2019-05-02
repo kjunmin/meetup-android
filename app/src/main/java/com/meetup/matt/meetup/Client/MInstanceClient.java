@@ -15,11 +15,14 @@ import com.google.gson.Gson;
 import com.meetup.matt.meetup.Adapters.RouteInfoAdapter;
 import com.meetup.matt.meetup.Handlers.InstanceHandler;
 import com.meetup.matt.meetup.Handlers.LocalStorageHandler;
+import com.meetup.matt.meetup.Handlers.RouteHandler;
 import com.meetup.matt.meetup.Handlers.SocketHandler;
 import com.meetup.matt.meetup.Helpers.GeocodeHelper;
+import com.meetup.matt.meetup.Listeners.ApiResponseListener;
 import com.meetup.matt.meetup.Listeners.SessionListeners;
 import com.meetup.matt.meetup.R;
 import com.meetup.matt.meetup.Utils.SessionUtil;
+import com.meetup.matt.meetup.WebApi.RouteApi;
 import com.meetup.matt.meetup.WebApi.SessionApi;
 import com.meetup.matt.meetup.config.Config;
 import com.meetup.matt.meetup.dto.MeetupSessionDTO;
@@ -45,6 +48,9 @@ public class MInstanceClient {
     private boolean isDestinationSet;
     private InstanceHandler instanceHandler;
     private LinkedHashMap<String, SessionUserDTO> sessionUserMap;
+    private RecyclerView mRouteInfoRecyclerView;
+    RecyclerView.LayoutManager layoutManager;
+    RecyclerView.Adapter mAdapter;
 
     public MInstanceClient(GoogleMap map, Context context, View view, MeetupSessionDTO sessionDetails) {
         this.map = map;
@@ -58,22 +64,25 @@ public class MInstanceClient {
         userDetails = LocalStorageHandler.getSessionUser(context, Config.SESSION_FILE_NAME);
         this.instanceHandler = new InstanceHandler(context, map);
         this.sessionUserMap = new LinkedHashMap<>();
+        this.mRouteInfoRecyclerView = view.findViewById(R.id.routeinfo_recycler_view);
+        this.layoutManager = new LinearLayoutManager(context);
 
         startService();
     }
 
     private void loadRouteInfoListView(ArrayList<SessionUserDTO> sessionUsers) {
         RecyclerView mRouteInfoRecyclerView = view.findViewById(R.id.routeinfo_recycler_view);
-        mRouteInfoRecyclerView.setHasFixedSize(false);
+
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
         mRouteInfoRecyclerView.setLayoutManager(layoutManager);
-        RecyclerView.Adapter mAdapter = new RouteInfoAdapter(sessionUsers);
-        mRouteInfoRecyclerView.setAdapter(mAdapter);
+
     }
 
 
     private void startService() {
         startSocketListener(socket);
+        mRouteInfoRecyclerView.setHasFixedSize(false);
+        mRouteInfoRecyclerView.setLayoutManager(layoutManager);
         if (SessionUtil.isHost(userDetails, sessionDetails)) {
             enableMapActions();
         }
@@ -82,13 +91,22 @@ public class MInstanceClient {
             public void onMeetupSessionRequestResponse(MeetupSessionDTO meetupSessionDetails) {
                 sessionDetails = meetupSessionDetails;
                 SessionUserDTO[] users = meetupSessionDetails.getUsers();
-                ArrayList<SessionUserDTO> sessionUserList = new ArrayList<>(Arrays.asList(users));
                 sessionUserMap = instanceHandler.updateSessionUsers(users, null);
-                loadRouteInfoListView(sessionUserList);
             }
         });
-
     }
+
+    private void updateRouteInfoDisplay(LinkedHashMap<String, SessionUserDTO> sessionUsersMap){
+        ArrayList<SessionUserDTO> sessionUserList = new ArrayList<>();
+        Set<String> keys = sessionUsersMap.keySet();
+        for (String key : keys) {
+            sessionUserList.add(sessionUsersMap.get(key));
+        }
+        mAdapter = new RouteInfoAdapter(sessionUserList);
+        mRouteInfoRecyclerView.setAdapter(mAdapter);
+        mAdapter.notifyDataSetChanged();
+    }
+
 
     private void enableMapActions() {
 
@@ -126,15 +144,34 @@ public class MInstanceClient {
     }
 
 
-    public void onLocationChanged(LatLng userLocation) {
-        socket.emit(SocketHandler.Event.Server.ON_USER_LOCATION_CHANGE, sessionDetails.getSessionId(), userDetails.getUserId(), userLocation.latitude, userLocation.longitude);
+    public void onLocationChanged(final LatLng userLocation) {
+        if (sessionUserMap.isEmpty()) {
+            SessionUserDTO sessionUser = new SessionUserDTO();
+            sessionUser.setUserLocation(userLocation);
+            sessionUser.setUser(userDetails);
+            socketUpdateSessionUser(socket, sessionDetails.getSessionId(), sessionUser);
+        }
+
 
         if (isDestinationSet && sessionDetails != null) {
+            RouteDTO route = new RouteDTO.Builder(context).setOrigin(userLocation).setDestination(sessionDetails.getDestinationLocation()).build();
+            RouteApi.getDistanceMatrix(context, route, new ApiResponseListener() {
+                @Override
+                public void onApiResponse(String response) {
+                    String dist = RouteHandler.getDistanceMatrix(response);
+                    SessionUserDTO sessionUser = new SessionUserDTO();
+                    sessionUser.setUserLocation(userLocation);
+                    sessionUser.setUser(userDetails);
+                    sessionUser.setDistance(dist);
+                    socketUpdateSessionUser(socket, sessionDetails.getSessionId(), sessionUser);
+                }
+            });
             SessionApi.handleGetMeetupSessionUsers(sessionDetails.getSessionId(), context, new SessionListeners.GetSessionUsersListener() {
                 @Override
                 public void onSessionUsersRequestResponse(SessionUserDTO[] sessionUsers) {
                     sessionUserMap = instanceHandler.updateSessionUsers(sessionUsers, sessionUserMap);
                     updateMapObjects(sessionUserMap);
+                    updateRouteInfoDisplay(sessionUserMap);
                 }
             });
 
@@ -164,7 +201,12 @@ public class MInstanceClient {
         Gson gson = new Gson();
         String req = gson.toJson(meetupSessionDTO);
         socket.emit(SocketHandler.Event.Server.ON_DESTINATION_UPDATE, req);
+    }
 
+    private void socketUpdateSessionUser(Socket socket, String sessionId, SessionUserDTO sessionUser) {
+        Gson gson = new Gson();
+        String sessionUserJson = gson.toJson(sessionUser);
+        socket.emit(SocketHandler.Event.Server.ON_USER_LOCATION_CHANGE, sessionId, sessionUserJson);
     }
 
     private void startSocketListener(Socket socket) {

@@ -8,7 +8,7 @@ import com.android.volley.toolbox.Volley;
 
 public class ApiRequestHandler {
 
-    private RequestQueue requestQueue;
+    private static RequestQueue requestQueue;
     private Context context;
 
     private ApiRequestHandler(Context context) {

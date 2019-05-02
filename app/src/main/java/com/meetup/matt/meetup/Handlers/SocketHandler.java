@@ -18,6 +18,7 @@ public class SocketHandler {
             public static final String ON_DESTINATION_UPDATE = "server_updatedest";
             public static final String ON_USER_LOCATION_CHANGE = "server_updatelocation";
             public static final String ON_USER_KICKED = "server_kickuser";
+            public static final String UPDATE_USER_DETAILS = "server_updateuserdetails";
         }
 
         public class Client {
@@ -27,6 +28,7 @@ public class SocketHandler {
             public static final String ON_DESTINATION_UPDATE = "client_updatedest";
             public static final String ON_USER_LOCATION_CHANGE = "client_updatelocation";
             public static final String ON_USER_KICKED = "client_kickuser";
+            public static final String UPDATE_USER_DETAILS = "client_updateuserdetails";
         }
     }
 
